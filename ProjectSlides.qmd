@@ -1,0 +1,258 @@
+---
+title: "Project Title"
+subtitle: "Project subtitle (if applicable)"
+author: "Your names | Group #X"
+date: today
+format:
+  beamer:
+    theme: Madrid
+    colortheme: default
+    fonttheme: serif
+    aspectratio: 169
+    slide-level: 2
+    toc: false
+    incremental: false
+    pdf-engine: pdflatex
+    keep-tex: false
+editor: visual
+---
+
+{r setup, include=FALSE}
+library(gridExtra)
+library(tidyverse)
+library(knitr)
+library(cowplot)
+knitr::opts_chunk$set(
+echo = FALSE,
+include = TRUE,
+warning = FALSE,
+message = FALSE,
+results = "markup",
+fig.width = 6,
+fig.height = 3.5,
+fig.align = "center",
+out.width = "80%"
+)
+
+{r load-data, echo=FALSE}
+### Read in data
+CATF_data <- read_csv("CATF_data.csv")
+
+{r clean_data, include=FALSE}
+
+## Clean the data 
+
+## E.g., remove unrealistic populations
+#CATF_data |> arrange(population) |> View()
+
+#CATF_data <- CATF_data |> filter(population > 100)
+## Alternatively, we could convert them to the correct values for each country by 
+## seeing roughly what the population values for each country are and scaling up accordingly.
+
+
+# ============================================================
+# Aggregate CATF_data: one row per country
+# ============================================================
+# Each country has multiple rows (one per student). We collapse
+# them into a single row using sensible summary functions.
+#
+# General strategy:
+#   - numeric columns  → median  (robust to outliers / typos)
+#   - character columns → mode   (most common value reported)
+#
+# Feel free to swap median() for mean() or mode() on any
+# variable if you think a different choice is more appropriate.
+# ============================================================
+
+
+# --- helper function: statistical mode (most frequent value) ----
+# works for both character and numeric vectors
+stat_mode <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) == 0) return(NA)
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+# --- identify column types --------------------------------------
+numeric_cols <- CATF_data |>
+  select(where(is.numeric)) |>
+  names()
+
+character_cols <- CATF_data |>
+  select(where(is.character), -country) |>
+  names()
+
+# --- aggregate -----------------------------------------------
+CATF_clean <- CATF_data |>
+  group_by(country) |>
+  summarise(
+    # For every numeric column, take the median (ignoring NAs)
+    across(all_of(numeric_cols), function(x){ median(x, na.rm = TRUE) }),
+
+    # For every character column, take the mode
+    across(all_of(character_cols), stat_mode),
+
+    # (optional) track how many student rows were combined
+    n_sources = n()
+  )
+
+# --- quick check ---------------------------------------------
+#glimpse(CATF_clean)
+
+# How many unique countries do we have?
+#nrow(CATF_clean)
+
+# ============================================================
+# CUSTOMISATION IDEAS
+# ============================================================
+# If you'd prefer to use the mean for some variables and the
+# median for others, you can split them up like this:
+#
+# CATF_clean <- CATF_data |>
+#   group_by(country) |>
+#   summarise(
+#     # Variables where mean makes sense
+#     across(c(gdp, population),
+#            function(x){ mean(x, na.rm = TRUE) } ),
+#
+#     # Variables where median is more robust
+#     across(c(poverty_rate, hdi, median_age),
+#            function(x){ median(x, na.rm = TRUE) } ),
+#
+#     # Variables where mode makes sense (e.g. categorical-ish)
+#     across(c(renewable_target_solar, renewable_target_wind),
+#            stat_mode),
+#
+#     n_sources = n()
+#   )
+# ============================================================
+
+
+
+Introduction
+
+Overall Theme: [State your unifying theme]
+
+Research Goal: [What are you investigating?]
+
+Target Population: [Who/what is being studied?]
+
+Audience: [Who is this for?]
+
+Data Summary
+
+Key Variables:
+
+Variable 1: [Description]
+
+Variable 2: [Description]
+
+Data Wrangling:
+
+[Any transformations, new variables created]
+
+Question #1: [Name - Question Statement]
+
+[Clear statement of the research question]
+
+Q1: Variables & Approach
+
+Variables used:
+
+[List variables]
+
+New variables/groups defined:
+
+[Any created variables]
+
+Q1: Visualization
+
+{r q1-plot}
+#Your plot code here 
+iris |>
+  ggplot(aes(x=Species, y=Sepal.Length)) +
+  geom_boxplot() +
+  ylab("Sepal Length")
+
+Q1: Summary Table
+
+{r q1-table}
+#Your summary table here
+
+# Here is an example of a nicely formatted table, using the kable function
+iris |>
+  group_by(Species) |>
+  summarise(
+    Count = n(),
+    `Avg Sepal Length` = round(mean(Sepal.Length), 1),
+    `Avg Petal Length` = round(mean(Petal.Length), 1)
+  ) |>
+  kable(caption = "Comparison of Iris Species")
+
+Insights for Q1
+
+Question #2: [Name - Question Statement]
+
+[Repeat structure from Q1]
+
+Q2: Variables & Approach
+
+Q2: Visualization
+
+Q2: Summary Table
+
+Question #3: [Name - Question Statement]
+
+Q3: Variables & Approach
+
+Q3: Visualization
+
+Q3: Summary Table
+
+Question #4: [Name - Question Statement] (if applicable)
+
+Q4: Variables & Approach
+
+Q4: Visualization
+
+Q4: Summary Table
+
+Overall Limitations
+
+It is optional to include this as a stand-alone section at the end, you could also choose to discuss this at the end of each research question
+
+Data Limitations:
+
+[Limitation 1]
+
+[Limitation 2]
+
+Future Directions:
+
+[How these could be addressed]
+
+Overall Conclusion
+
+Key Findings:
+
+[Finding 1 related to theme]
+
+[Finding 2 related to theme]
+
+[Finding 3 related to theme]
+
+Connection to Theme:
+
+[How findings relate back to unifying theme]
+
+References & Acknowledgements (if applicable)
+
+References:
+
+[Citation 1, if applicable]
+
+Acknowledgements:
+
+[Any acknowledgements, if applicable]
+
