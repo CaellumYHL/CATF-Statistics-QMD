@@ -17,184 +17,184 @@ format:
 editor: visual
 ---
 
-{r setup, include=FALSE}
-library(gridExtra)
-library(tidyverse)
-library(knitr)
-library(cowplot)
-knitr::opts_chunk$set(
-echo = FALSE,
-include = TRUE,
-warning = FALSE,
-message = FALSE,
-results = "markup",
-fig.width = 6,
-fig.height = 3.5,
-fig.align = "center",
-out.width = "80%"
-)
+{r setup, include=FALSE} library(gridExtra) library(tidyverse) library(knitr) library(cowplot) knitr::opts_chunk\$set( echo = FALSE, include = TRUE, warning = FALSE, message = FALSE, results = "markup", fig.width = 6, fig.height = 3.5, fig.align = "center", out.width = "80%" )
 
-{r load-data, echo=FALSE}
-### Read in data
-CATF_data <- read_csv("CATF_data.csv")
+{r load-data, echo=FALSE} \### Read in data CATF_data \<- read_csv("CATF_data.csv")
 
 {r clean_data, include=FALSE}
 
-## Clean the data 
+## Clean the data
 
 ## E.g., remove unrealistic populations
-#CATF_data |> arrange(population) |> View()
 
-#CATF_data <- CATF_data |> filter(population > 100)
-## Alternatively, we could convert them to the correct values for each country by 
-## seeing roughly what the population values for each country are and scaling up accordingly.
+#CATF_data \|\> arrange(population) \|\> View()
 
+#CATF_data \<- CATF_data \|\> filter(population \> 100) \## Alternatively, we could convert them to the correct values for each country by \## seeing roughly what the population values for each country are and scaling up accordingly.
 
 # ============================================================
+
 # Aggregate CATF_data: one row per country
-# ============================================================
-# Each country has multiple rows (one per student). We collapse
-# them into a single row using sensible summary functions.
-#
-# General strategy:
-#   - numeric columns  → median  (robust to outliers / typos)
-#   - character columns → mode   (most common value reported)
-#
-# Feel free to swap median() for mean() or mode() on any
-# variable if you think a different choice is more appropriate.
+
 # ============================================================
 
+# Each country has multiple rows (one per student). We collapse
+
+# them into a single row using sensible summary functions.
+
+# 
+
+# General strategy:
+
+# - numeric columns → median (robust to outliers / typos)
+
+# - character columns → mode (most common value reported)
+
+# 
+
+# Feel free to swap median() for mean() or mode() on any
+
+# variable if you think a different choice is more appropriate.
+
+# ============================================================
 
 # --- helper function: statistical mode (most frequent value) ----
+
 # works for both character and numeric vectors
-stat_mode <- function(x) {
-  x <- x[!is.na(x)]
-  if (length(x) == 0) return(NA)
-  ux <- unique(x)
-  ux[which.max(tabulate(match(x, ux)))]
-}
+
+stat_mode \<- function(x) { x \<- x\[!is.na(x)\] if (length(x) == 0) return(NA) ux \<- unique(x) ux\[which.max(tabulate(match(x, ux)))\] }
 
 # --- identify column types --------------------------------------
-numeric_cols <- CATF_data |>
-  select(where(is.numeric)) |>
-  names()
 
-character_cols <- CATF_data |>
-  select(where(is.character), -country) |>
-  names()
+numeric_cols \<- CATF_data \|\> select(where(is.numeric)) \|\> names()
+
+character_cols \<- CATF_data \|\> select(where(is.character), -country) \|\> names()
 
 # --- aggregate -----------------------------------------------
-CATF_clean <- CATF_data |>
-  group_by(country) |>
-  summarise(
-    # For every numeric column, take the median (ignoring NAs)
-    across(all_of(numeric_cols), function(x){ median(x, na.rm = TRUE) }),
 
-    # For every character column, take the mode
-    across(all_of(character_cols), stat_mode),
+CATF_clean \<- CATF_data \|\> group_by(country) \|\> summarise( \# For every numeric column, take the median (ignoring NAs) across(all_of(numeric_cols), function(x){ median(x, na.rm = TRUE) }),
 
-    # (optional) track how many student rows were combined
-    n_sources = n()
-  )
+```         
+# For every character column, take the mode
+across(all_of(character_cols), stat_mode),
+
+# (optional) track how many student rows were combined
+n_sources = n()
+```
+
+)
 
 # --- quick check ---------------------------------------------
+
 #glimpse(CATF_clean)
 
 # How many unique countries do we have?
+
 #nrow(CATF_clean)
 
 # ============================================================
+
 # CUSTOMISATION IDEAS
+
 # ============================================================
+
 # If you'd prefer to use the mean for some variables and the
+
 # median for others, you can split them up like this:
-#
-# CATF_clean <- CATF_data |>
-#   group_by(country) |>
-#   summarise(
-#     # Variables where mean makes sense
-#     across(c(gdp, population),
-#            function(x){ mean(x, na.rm = TRUE) } ),
-#
-#     # Variables where median is more robust
-#     across(c(poverty_rate, hdi, median_age),
-#            function(x){ median(x, na.rm = TRUE) } ),
-#
-#     # Variables where mode makes sense (e.g. categorical-ish)
-#     across(c(renewable_target_solar, renewable_target_wind),
-#            stat_mode),
-#
-#     n_sources = n()
-#   )
+
+# 
+
+# CATF_clean \<- CATF_data \|\>
+
+# group_by(country) \|\>
+
+# summarise(
+
+# \# Variables where mean makes sense
+
+# across(c(gdp, population),
+
+# function(x){ mean(x, na.rm = TRUE) } ),
+
+# 
+
+# \# Variables where median is more robust
+
+# across(c(poverty_rate, hdi, median_age),
+
+# function(x){ median(x, na.rm = TRUE) } ),
+
+# 
+
+# \# Variables where mode makes sense (e.g. categorical-ish)
+
+# across(c(renewable_target_solar, renewable_target_wind),
+
+# stat_mode),
+
+# 
+
+# n_sources = n()
+
+# )
+
 # ============================================================
-
-
 
 Introduction
 
-Overall Theme: [State your unifying theme]
+Overall Theme: \[Patterns and drivers of renewable energy development across African electricity systems\]
 
-Research Goal: [What are you investigating?]
+Research Goal: \[Investigate how renewable energy usage is different among African electricity systems and explore factors that may be associated with differences in renewable energy capacity between countries.\]
 
-Target Population: [Who/what is being studied?]
+Target Population: \[The study focuses on African countries included in the CATF electricity sector dataset.\]
 
-Audience: [Who is this for?]
+Audience: \[The primary audience is Clean Air Task Force (CATF) staff, who are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).\]
 
 Data Summary
 
+The dataset contains country-level indicators describing electricity system performance across African countries. These indicators capture areas such as electricity access, reliability, infrastructure development, financial performance, and renewable energy capacity.
+
 Key Variables:
 
-Variable 1: [Description]
+Variable 1: \[Description\]
 
-Variable 2: [Description]
+Variable 2: \[Description\]
 
 Data Wrangling:
 
-[Any transformations, new variables created]
+\[- To facilitate comparison across countries, the variable `collection_rate_percent` was grouped into categories representing different levels of electricity revenue collection performance. A new variable called `collection_group` was created in the `CATF_data` dataset. The groups are defined as Low (<70%), Medium (70–90%), and High (>90%). This transformation allows us to compare `total_installed_variable_renewables_capacity` across countries with different levels of revenue collection performance.
+\]
 
-Question #1: [Name - Question Statement]
+Question #1: \[Name - Question Statement\]
 
-[Clear statement of the research question]
+\[Clear statement of the research question\]
 
 Q1: Variables & Approach
 
 Variables used:
 
-[List variables]
+\[List variables\]
 
 New variables/groups defined:
 
-[Any created variables]
+\[Any created variables\]
 
 Q1: Visualization
 
-{r q1-plot}
-#Your plot code here 
-iris |>
-  ggplot(aes(x=Species, y=Sepal.Length)) +
-  geom_boxplot() +
-  ylab("Sepal Length")
+{r q1-plot} #Your plot code here iris \|\> ggplot(aes(x=Species, y=Sepal.Length)) + geom_boxplot() + ylab("Sepal Length")
 
 Q1: Summary Table
 
-{r q1-table}
-#Your summary table here
+{r q1-table} #Your summary table here
 
 # Here is an example of a nicely formatted table, using the kable function
-iris |>
-  group_by(Species) |>
-  summarise(
-    Count = n(),
-    `Avg Sepal Length` = round(mean(Sepal.Length), 1),
-    `Avg Petal Length` = round(mean(Petal.Length), 1)
-  ) |>
-  kable(caption = "Comparison of Iris Species")
+
+iris \|\> group_by(Species) \|\> summarise( Count = n(), `Avg Sepal Length` = round(mean(Sepal.Length), 1), `Avg Petal Length` = round(mean(Petal.Length), 1) ) \|\> kable(caption = "Comparison of Iris Species")
 
 Insights for Q1
 
-Question #2: [Name - Question Statement]
+Question #2: \[Name - Question Statement\]
 
-[Repeat structure from Q1]
+\[Repeat structure from Q1\]
 
 Q2: Variables & Approach
 
@@ -202,7 +202,7 @@ Q2: Visualization
 
 Q2: Summary Table
 
-Question #3: [Name - Question Statement]
+Question #3: \[Name - Question Statement\]
 
 Q3: Variables & Approach
 
@@ -210,13 +210,65 @@ Q3: Visualization
 
 Q3: Summary Table
 
-Question #4: [Name - Question Statement] (if applicable)
+## Question #4: \[Sahand Samadirad - Revenue Collection and Renewable Capacity\]
 
-Q4: Variables & Approach
+Do countries with higher electricity revenue collection rates tend to have more installed renewable energy capacity?
 
-Q4: Visualization
+## Q4: Variables & Approach
 
-Q4: Summary Table
+**Variables used:**
+
+- **collection_rate_percent**\
+  Percentage of billed electricity revenue that utilities successfully collect.\
+  This variable reflects the financial efficiency and operational performance of electricity utilities.
+
+- **total_installed_variable_renewables_capacity**\
+  Total installed capacity of variable renewable energy sources such as wind and solar (MW).\
+  This variable represents the level of renewable energy development within a country's electricity system.
+
+**New variables/groups defined:**
+
+To make comparisons clearer, countries are grouped based on electricity revenue collection performance:
+
+- Low collection rate: below 70%\
+- Medium collection rate: 70–90%\
+- High collection rate: above 90%
+
+These categories allow us to compare renewable capacity across different levels of financial performance.
+
+## Q4: Visualization
+
+```{r q4-plot}
+CATF_data |>
+  ggplot(aes(x = collection_rate_percent, y = total_installed_variable_renewables_capacity)) +
+  geom_point(color = "darkgreen", size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(
+    x = "Electricity Revenue Collection Rate (%)",
+    y = "Installed Renewable Energy Capacity (MW)",
+    title = "Collection Rate vs Renewable Energy Capacity"
+  )
+```
+
+## Q4: Summary Table
+
+```{r q4-table}
+CATF_data |>
+  mutate(
+    collection_group = case_when(
+      collection_rate_percent < 70 ~ "Low (<70%)",
+      collection_rate_percent < 90 ~ "Medium (70–90%)",
+      TRUE ~ "High (>90%)"
+    )
+  ) |>
+  group_by(collection_group) |>
+  summarise(
+    Countries = n(),
+    `Avg Collection Rate (%)` = round(mean(collection_rate_percent, na.rm = TRUE), 1),
+    `Avg Renewable Capacity (MW)` = round(mean(total_installed_variable_renewables_capacity, na.rm = TRUE), 1)
+  ) |>
+  kable(caption = "Average Renewable Capacity by Collection Rate Category")
+```
 
 Overall Limitations
 
@@ -224,35 +276,34 @@ It is optional to include this as a stand-alone section at the end, you could al
 
 Data Limitations:
 
-[Limitation 1]
+\[Limitation 1\]
 
-[Limitation 2]
+\[Limitation 2\]
 
 Future Directions:
 
-[How these could be addressed]
+\[How these could be addressed\]
 
 Overall Conclusion
 
 Key Findings:
 
-[Finding 1 related to theme]
+\[Finding 1 related to theme\]
 
-[Finding 2 related to theme]
+\[Finding 2 related to theme\]
 
-[Finding 3 related to theme]
+\[Finding 3 related to theme\]
 
 Connection to Theme:
 
-[How findings relate back to unifying theme]
+\[How findings relate back to unifying theme\]
 
 References & Acknowledgements (if applicable)
 
 References:
 
-[Citation 1, if applicable]
+\[Citation 1, if applicable\]
 
 Acknowledgements:
 
-[Any acknowledgements, if applicable]
-
+\[Any acknowledgements, if applicable\]
