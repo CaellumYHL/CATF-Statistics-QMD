@@ -260,7 +260,8 @@ q3_summary
 
 -   The median across both higher and lower groups was the same, further suggesting that renewable usage may not be explained solely by the private sectors role in power generation.
 
-## Question #4: \[Sahand Samadirad - Revenue Collection and Renewable Capacity\]
+
+## Question #4: [Sahand Samadirad - Revenue Collection and Renewable Capacity]
 
 Do countries with higher electricity revenue collection rates tend to have more installed renewable energy capacity?
 
