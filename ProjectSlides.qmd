@@ -324,13 +324,13 @@ q3_summary <- CATF_clean |>
 q3_summary
 ```
 
+## Insights for Q3
+
 - There is no clear and strong relationship between private sector participation in power generation and renewable usage.
 
 - Countires with lower private participation have a variety of renewable outcomes, whilst countries with higher private participation did not have higher renewable outcomes.
 
 - The median across both higher and lower groups was the same, further suggesting that renewable usage may not be explained solely by the private sectors role in power generation.
-
-## Insights for Q3
 
 
 ## Question #4: [Sahand Samadirad - Revenue Collection and Renewable Capacity]
@@ -399,13 +399,16 @@ It is optional to include this as a stand-alone section at the end, you could al
 
 Data Limitations:
 
-[Limitation 1]
+* **Data Collection: ** The CATF data was collected by student internet searches. This introduces lots of room for inaccuracies, since data points may come from different years or use different definitions. 
+* **Inaccuracies in data:** Outliers such as the 65 000% renewables_share_gen_mix indicate that the data set contains some inaccurate data that will impact the results of the research.
+* **Missing Data:** Many African countries may lack the necessary infrastructure to report all the variables in the dataset. This may skew the results of research; it may cause the less wealthy countries to be less represented in the dataset.
 
-[Limitation 2]
 
 Future Directions:
 
-[How these could be addressed]
+* **Standardized Data Collection:** To reduce inaccuracies introduced by varying methods of data collection, the CATF dataset could be collected only from standardized global databases, i.e World Bank. This would minimize inconsistent value but may lead to more values being dropped.
+* **Data Cleansing:** To improve the removal of extreme outliers (like the 65,000% renewable share), strict checks could be implemented during data entry to automatically remove physically impossible values before analysis. For example, a check could be implemented to ensure that the values inputted in the renewables_share_gen_mix are never greater than 100.
+* **Inclusive Data Collection Methods:** Instead of collecting data directly from the government records, globally available proxy data could be used to ensure that every country is included. While it is unfeasible to manually collect the data for each country, the CATF could use stand-in values as estimates. For example, the amount of imported solar panels could be used as a rough proxy for solar capacity. 
 
 Overall Conclusion
 
