@@ -202,13 +202,69 @@ Q2: Visualization
 
 Q2: Summary Table
 
-Question #3: \[Name - Question Statement\]
+## Question #3: \[Hyman - Question Statement\]
 
-Q3: Variables & Approach
+Is private sector participation in power generation associated with renewable energy adoption in African countries?
 
-Q3: Visualization
+## Q3: Variables & Approach
 
-Q3: Summary Table
+**Variables used:**
+
+- private_sector_power_gen_commercial
+- renewables_share_gen_mix_percent
+- installed_gen_capacity
+
+**New variables/groups defined:**
+
+- private_generation_share \<- private_sector_power_gen_commercial / installed_gen_capacity
+
+## Q3: Visualization
+
+```{r q3-plot}
+CATF_clean <- CATF_clean |>
+  filter(
+    !is.na(private_sector_power_gen_commercial),
+    !is.na(installed_gen_capacity),
+    !is.na(renewables_share_gen_mix_percent),
+    installed_gen_capacity > 0
+  ) |>
+  mutate(
+    private_generation_share = private_sector_power_gen_commercial / installed_gen_capacity
+  )
+
+q3_plot <- ggplot(CATF_clean, aes(x = private_generation_share, y = renewables_share_gen_mix_percent)) +
+  geom_point() +
+  labs(
+    title = "Renewable Share vs Private Generation Share",
+    x = "Private generation share",
+    y = "Renewables share of generation mix (%)"
+  )
+
+q3_plot
+```
+
+## Q3: Summary Table
+
+```{r q3-table}
+q3_summary <- CATF_clean |>
+  mutate(
+    private_group = if_else(private_generation_share < 0.5, "Lower", "Higher")
+  ) |>
+  group_by(private_group) |>
+  summarise(
+    n = n(),
+    mean_renewable = mean(renewables_share_gen_mix_percent),
+    median_renewable = median(renewables_share_gen_mix_percent)
+  )
+
+q3_summary
+```
+
+- There is no clear and strong relationship between private sector participation in power generation and renewable usage.
+
+- Countires with lower private participation have a variety of renewable outcomes, whilst countries with higher private participation did not have higher renewable outcomes.
+
+- The median across both higher and lower groups was the same, further suggesting that renewable usage may not be explained solely by the private sectors role in power generation.
 
 ## Question #4: \[Sahand Samadirad - Revenue Collection and Renewable Capacity\]
 
