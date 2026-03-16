@@ -395,14 +395,10 @@ CATF_data |>
 
 ## Overall Limitations
 
-It is optional to include this as a stand-alone section at the end, you could also choose to discuss this at the end of each research question
-
 Data Limitations:
-
 * **Data Collection: ** The CATF data was collected by student internet searches. This introduces lots of room for inaccuracies, since data points may come from different years or use different definitions. 
 * **Inaccuracies in data:** Outliers such as the 65 000% renewables_share_gen_mix indicate that the data set contains some inaccurate data that will impact the results of the research.
 * **Missing Data:** Many African countries may lack the necessary infrastructure to report all the variables in the dataset. This may skew the results of research; it may cause the less wealthy countries to be less represented in the dataset.
-
 
 Future Directions:
 
