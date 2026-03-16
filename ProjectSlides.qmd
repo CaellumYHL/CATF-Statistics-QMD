@@ -17,19 +17,38 @@ format:
 editor: visual
 ---
 
-{r setup, include=FALSE} library(gridExtra) library(tidyverse) library(knitr) library(cowplot) knitr::opts_chunk\$set( echo = FALSE, include = TRUE, warning = FALSE, message = FALSE, results = "markup", fig.width = 6, fig.height = 3.5, fig.align = "center", out.width = "80%" )
+```{r setup, include=FALSE}
+library(gridExtra)
+library(tidyverse)
+library(knitr)
+library(cowplot)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  include = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  results = "markup",
+  fig.width = 6,
+  fig.height = 3.5,
+  fig.align = "center",
+  out.width = "80%"
+)
+```
 
-{r load-data, echo=FALSE} \### Read in data CATF_data \<- read_csv("CATF_data.csv")
+```{r load-data, echo=FALSE}
+### Read in data
+CATF_data <- read_csv("CATF_data.csv")
+```
 
-{r clean_data, include=FALSE}
+```{r clean_data, include=FALSE}
 
 ## Clean the data
 
 ## E.g., remove unrealistic populations
 
-#CATF_data \|\> arrange(population) \|\> View()
+#CATF_data |> arrange(population) |> View()
 
-#CATF_data \<- CATF_data \|\> filter(population \> 100) \## Alternatively, we could convert them to the correct values for each country by \## seeing roughly what the population values for each country are and scaling up accordingly.
+#CATF_data <- CATF_data |> filter(population > 100) ## Alternatively, we could convert them to the correct values for each country by ## seeing roughly what the population values for each country are and scaling up accordingly.
 
 # ============================================================
 
@@ -61,26 +80,28 @@ editor: visual
 
 # works for both character and numeric vectors
 
-stat_mode \<- function(x) { x \<- x\[!is.na(x)\] if (length(x) == 0) return(NA) ux \<- unique(x) ux\[which.max(tabulate(match(x, ux)))\] }
+stat_mode <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) == 0) return(NA)
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
 
 # --- identify column types --------------------------------------
 
-numeric_cols \<- CATF_data \|\> select(where(is.numeric)) \|\> names()
+numeric_cols <- CATF_data |> select(where(is.numeric)) |> names()
 
-character_cols \<- CATF_data \|\> select(where(is.character), -country) \|\> names()
+character_cols <- CATF_data |> select(where(is.character), -country) |> names()
 
 # --- aggregate -----------------------------------------------
 
-CATF_clean \<- CATF_data \|\> group_by(country) \|\> summarise( \# For every numeric column, take the median (ignoring NAs) across(all_of(numeric_cols), function(x){ median(x, na.rm = TRUE) }),
+CATF_clean <- CATF_data |> group_by(country) |> summarise( # For every numeric column, take the median (ignoring NAs) across(all_of(numeric_cols), function(x){ median(x, na.rm = TRUE) }),
 
-```         
 # For every character column, take the mode
 across(all_of(character_cols), stat_mode),
 
 # (optional) track how many student rows were combined
 n_sources = n()
-```
-
 )
 
 # --- quick check ---------------------------------------------
@@ -103,13 +124,13 @@ n_sources = n()
 
 # 
 
-# CATF_clean \<- CATF_data \|\>
+# CATF_clean <- CATF_data |>
 
-# group_by(country) \|\>
+# group_by(country) |>
 
 # summarise(
 
-# \# Variables where mean makes sense
+# # Variables where mean makes sense
 
 # across(c(gdp, population),
 
@@ -117,7 +138,7 @@ n_sources = n()
 
 # 
 
-# \# Variables where median is more robust
+# # Variables where median is more robust
 
 # across(c(poverty_rate, hdi, median_age),
 
@@ -125,7 +146,7 @@ n_sources = n()
 
 # 
 
-# \# Variables where mode makes sense (e.g. categorical-ish)
+# # Variables where mode makes sense (e.g. categorical-ish)
 
 # across(c(renewable_target_solar, renewable_target_wind),
 
@@ -139,15 +160,17 @@ n_sources = n()
 
 # ============================================================
 
+```
+
 Introduction
 
-Overall Theme: \[Patterns and drivers of renewable energy development across African electricity systems\]
+Overall Theme: [Patterns and drivers of renewable energy development across African electricity systems]
 
-Research Goal: \[Investigate how renewable energy usage is different among African electricity systems and explore factors that may be associated with differences in renewable energy capacity between countries.\]
+Research Goal: [Investigate how renewable energy usage is different among African electricity systems and explore factors that may be associated with differences in renewable energy capacity between countries.]
 
-Target Population: \[The study focuses on African countries included in the CATF electricity sector dataset.\]
+Target Population: [The study focuses on African countries included in the CATF electricity sector dataset.]
 
-Audience: \[The primary audience is Clean Air Task Force (CATF) staff, who are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).\]
+Audience: [The primary audience is Clean Air Task Force (CATF) staff, who are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).]
 
 Data Summary
 
@@ -155,46 +178,51 @@ The dataset contains country-level indicators describing electricity system perf
 
 Key Variables:
 
-Variable 1: \[Description\]
+Variable 1: [Description]
 
-Variable 2: \[Description\]
+Variable 2: [Description]
 
 Data Wrangling:
 
-\[- To facilitate comparison across countries, the variable `collection_rate_percent` was grouped into categories representing different levels of electricity revenue collection performance. A new variable called `collection_group` was created in the `CATF_data` dataset. The groups are defined as Low (<70%), Medium (70–90%), and High (>90%). This transformation allows us to compare `total_installed_variable_renewables_capacity` across countries with different levels of revenue collection performance.
-\]
+[- To facilitate comparison across countries, the variable `collection_rate_percent` was grouped into categories representing different levels of electricity revenue collection performance. A new variable called `collection_group` was created in the `CATF_data` dataset. The groups are defined as Low (<70%), Medium (70–90%), and High (>90%). This transformation allows us to compare `total_installed_variable_renewables_capacity` across countries with different levels of revenue collection performance.
+]
 
-Question #1: \[Name - Question Statement\]
+Question #1: [Name - Question Statement]
 
-\[Clear statement of the research question\]
+[Clear statement of the research question]
 
 Q1: Variables & Approach
 
 Variables used:
 
-\[List variables\]
+[List variables]
 
 New variables/groups defined:
 
-\[Any created variables\]
+[Any created variables]
 
 Q1: Visualization
 
-{r q1-plot} #Your plot code here iris \|\> ggplot(aes(x=Species, y=Sepal.Length)) + geom_boxplot() + ylab("Sepal Length")
+```{r q1-plot}
+#Your plot code here
+iris |> ggplot(aes(x=Species, y=Sepal.Length)) + geom_boxplot() + ylab("Sepal Length")
+```
 
 Q1: Summary Table
 
-{r q1-table} #Your summary table here
+```{r q1-table}
+#Your summary table here
 
 # Here is an example of a nicely formatted table, using the kable function
 
-iris \|\> group_by(Species) \|\> summarise( Count = n(), `Avg Sepal Length` = round(mean(Sepal.Length), 1), `Avg Petal Length` = round(mean(Petal.Length), 1) ) \|\> kable(caption = "Comparison of Iris Species")
+iris |> group_by(Species) |> summarise( Count = n(), `Avg Sepal Length` = round(mean(Sepal.Length), 1), `Avg Petal Length` = round(mean(Petal.Length), 1) ) |> kable(caption = "Comparison of Iris Species")
+```
 
 Insights for Q1
 
-Question #2: \[Name - Question Statement\]
+Question #2: [Name - Question Statement]
 
-\[Repeat structure from Q1\]
+[Repeat structure from Q1]
 
 Q2: Variables & Approach
 
@@ -202,15 +230,74 @@ Q2: Visualization
 
 Q2: Summary Table
 
-Question #3: \[Name - Question Statement\]
+## Question #3: [Caellum Yip Hoi - Lee - Renewable Presence and Power Reliability]
+Do countries with a higher share of renewable energy in the generation mix tend to experience more frequent power interruptions?
 
-Q3: Variables & Approach
+## Q3: Variables & Approach
+**Variables used:**
 
-Q3: Visualization
+- **renewables_share_gen_mix_percent:**
+  The percentage of electricity generation coming from renewable energy sources.
+  This variable captures the amount of renewable energy being employed in the country's electricity system.
 
-Q3: Summary Table
+- **SAIFI:**
+  System Average Interruption Frequency Index, representing Voltage Quality / Frequency 
+  It is the total number of reported interruptions divided by total customers. This variable serves as a primary measure of power reliability.
+  
+**New variables/groups defined:**
 
-## Question #4: \[Sahand Samadirad - Revenue Collection and Renewable Capacity\]
+To intuitively compare reliability, I can group countries based on their renewable generation share:
+
+- renewable_group: "Low" when renewables_share_gen_mix_percent is below 20%, "Medium" when it is between 20-50%, and "High" when above 50%
+  
+  
+## Q3: Visualization
+```{r q3-plot}
+CATF_data |>
+  # An extreme outlier of 65,000 % exists in the data, filtered this out because it makes no sense and is likely a typo. 
+  filter(renewables_share_gen_mix_percent <= 100) |> 
+  ggplot(aes(x = renewables_share_gen_mix_percent, y = SAIFI)) +
+  geom_point(color = "steelblue", size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(
+    x = "Renewables Share in Generation Mix (%)",
+    y = "Frequency of Interruptions (SAIFI)",
+    title = "Renewable Energy Share vs Power Reliability"
+  )
+```
+
+## Q3: Summary Table
+
+```{r q3-table}
+CATF_data |>
+  # An extreme outlier of 65,000 % exists in the data, filtered this out because it makes no sense and is likely a typo. 
+  filter(renewables_share_gen_mix_percent <= 100) |>
+  mutate(
+    renewable_group = case_when(
+      renewables_share_gen_mix_percent < 20 ~ "Low (<20%)",
+      renewables_share_gen_mix_percent <= 50 & renewables_share_gen_mix_percent >= 20 ~ "Medium (20–50%)",
+      renewables_share_gen_mix_percent > 50  ~ "High (>50%)"
+    )
+  ) |>
+  
+  mutate(renewable_group = factor(renewable_group, levels = c("Low (<20%)", "Medium (20–50%)", "High (>50%)"))) |>
+  group_by(renewable_group) |>
+  summarise(
+    Countries = n(),
+    `Avg Renewable Share (%)` = round(mean(renewables_share_gen_mix_percent, na.rm = TRUE), 1),
+    `Avg SAIFI (Interruptions)` = round(mean(SAIFI, na.rm = TRUE), 1)
+  ) |>
+  kable(caption = "Average System Interruptions (SAIFI) by Renewable Energy Share")
+```
+
+## Q3: Insights & Takeaways
+
+* **No clear linear relationship:** The scatter plot has a nearly flat trend line, suggesting that a higher share of renewables in the generation mix is not correlated with a higher frequency of power interruptions.
+* **Reliability driven by other factors:** Countries with high interruption frequencies had widely varying levels of renewable energy in their generation mix. This suggests that issues with reliability and the subsequent SAIFI score likely has more to do with other factors, i.e infrastructure. 
+* **Renewables not sacrificing stability:** I see this evidence as positive, since it suggests that African electricity systems can have higher percentages of renewable energy without directly inducing a lower electric grid reliability.
+
+
+## Question #4: [Sahand Samadirad - Revenue Collection and Renewable Capacity]
 
 Do countries with higher electricity revenue collection rates tend to have more installed renewable energy capacity?
 
@@ -270,39 +357,39 @@ CATF_data |>
   kable(caption = "Average Renewable Capacity by Collection Rate Category")
 ```
 
-Overall Limitations
+## Overall Limitations
 
 It is optional to include this as a stand-alone section at the end, you could also choose to discuss this at the end of each research question
 
 Data Limitations:
 
-\[Limitation 1\]
+[Limitation 1]
 
-\[Limitation 2\]
+[Limitation 2]
 
 Future Directions:
 
-\[How these could be addressed\]
+[How these could be addressed]
 
 Overall Conclusion
 
 Key Findings:
 
-\[Finding 1 related to theme\]
+[Finding 1 related to theme]
 
-\[Finding 2 related to theme\]
+[Finding 2 related to theme]
 
-\[Finding 3 related to theme\]
+[Finding 3 related to theme]
 
 Connection to Theme:
 
-\[How findings relate back to unifying theme\]
+[How findings relate back to unifying theme]
 
 References & Acknowledgements (if applicable)
 
 References:
 
-\[Citation 1, if applicable\]
+[Citation 1, if applicable]
 
 Acknowledgements:
 
