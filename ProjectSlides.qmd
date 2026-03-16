@@ -256,15 +256,77 @@ CATF_data |>
 * **Renewables not sacrificing stability:** I see this evidence as positive, since it suggests that African electricity systems can have higher percentages of renewable energy without directly inducing a lower electric grid reliability.
 
 
-Question #2: [Name - Question Statement]
+## Question #2: \[Paanini Kartik - Development and Renewable Energy Usage\]
 
-[Repeat structure from Q1]
+Do more developed countries tend to generate a higher or lower proportion of renewable energy?
 
-Q2: Variables & Approach
+## Q2: Variables & Approach
 
-Q2: Visualization
+**Variables from data:**
 
-Q2: Summary Table
+-   **hdi** The Human Development Index of a given country. This will be used as a metric for how developed the country is.
+-   **renewables_share_gen_mix_percent** What % of the country's generation comes from renewables. We use this instead of total_installed_renewables_capacity as that may trivially become higher with more development.
+
+**Created variables:**
+
+In order to group countries based on their HDI to facilitate better comparison, we will use the HDI standard, as detailed by the UNDP.
+
+-   **hdi_grouping** "Low" when the HDI is less than 0.5. "Medium" when it is \>=0.5 and \<0.7. "High" when it is \>=0.7 and \<0.8. "Very high" when it is \>=0.8.
+
+## Q2: Visualization
+
+```{r q2-plot}
+CATF_data |>
+  filter(!is.na(hdi), !is.na(renewables_share_gen_mix_percent)) |>
+  filter(renewables_share_gen_mix_percent <= 100 &
+         renewables_share_gen_mix_percent >= 0) |>
+  filter(hdi >= 0 & hdi <= 1) |> # remove invalid values
+  ggplot(aes(x = hdi, y = renewables_share_gen_mix_percent)) +
+  geom_point(color = "darkred", size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(
+    x = "Human Development Index (HDI)",
+    y = "Renewables Share of Generation Mix (%)",
+    title = "Development Level vs Renewable Energy Usage"
+  )
+```
+
+## Q2: Summary Table
+
+```{r q2-table}
+CATF_data |>
+  filter(!is.na(hdi), !is.na(renewables_share_gen_mix_percent)) |>
+  filter(renewables_share_gen_mix_percent <= 100 &
+         renewables_share_gen_mix_percent >= 0) |>
+  filter(hdi >= 0 & hdi <= 1) |> # remove invalid values
+  mutate(
+    hdi_grouping = case_when(
+      hdi < 0.5 ~ "Low (<0.5)",
+      hdi >= 0.5 & hdi < 0.7 ~ "Medium (0.5–0.7)",
+      hdi >= 0.7 & hdi < 0.8 ~ "High (0.7–0.8)",
+      hdi >= 0.8 ~ "Very High (>=0.8)"
+    )
+  ) |>
+  mutate(
+    hdi_grouping = factor(
+      hdi_grouping,
+      levels = c("Low (<0.5)", "Medium (0.5–0.7)", "High (0.7–0.8)", "Very High (>=0.8)")
+    )
+  ) |>
+  group_by(hdi_grouping) |>
+  summarise(
+    Countries = n(),
+    `Avg HDI` = round(mean(hdi, na.rm = TRUE), 2),
+    `Avg Renewable Share (%)` = round(mean(renewables_share_gen_mix_percent, na.rm = TRUE), 1)
+  ) |>
+  kable(caption = "Renewable Energy Share by HDI Development Group")
+```
+
+## Q2: Insights & Takeaways
+
+-   Visually speaking, there appears to be a slight negative correlation between the two variables, given the line of best fit having a slightly negative slope.
+-   However, there appears to be a large spread in the data, with data points not clustering around said line. Moreover, there are less countries with higher HDI values than lower ones, as apparent by the summary table.
+-   As a result, further hypothesis testing soon to be done will be able to give a stronger claim for whether or not a negative correlation truly exists.
 
 ## Question #3: [Hyman - Question Statement]
 
