@@ -306,4 +306,4 @@ References:
 
 Acknowledgements:
 
-\[Any acknowledgements, if applicable\]
+[Any acknowledgements, if applicable]
