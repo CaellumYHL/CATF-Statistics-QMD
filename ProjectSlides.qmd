@@ -187,53 +187,10 @@ Data Wrangling:
 [- To facilitate comparison across countries, the variable `collection_rate_percent` was grouped into categories representing different levels of electricity revenue collection performance. A new variable called `collection_group` was created in the `CATF_data` dataset. The groups are defined as Low (<70%), Medium (70–90%), and High (>90%). This transformation allows us to compare `total_installed_variable_renewables_capacity` across countries with different levels of revenue collection performance.
 ]
 
-Question #1: [Name - Question Statement]
-
-[Clear statement of the research question]
-
-Q1: Variables & Approach
-
-Variables used:
-
-[List variables]
-
-New variables/groups defined:
-
-[Any created variables]
-
-Q1: Visualization
-
-```{r q1-plot}
-#Your plot code here
-iris |> ggplot(aes(x=Species, y=Sepal.Length)) + geom_boxplot() + ylab("Sepal Length")
-```
-
-Q1: Summary Table
-
-```{r q1-table}
-#Your summary table here
-
-# Here is an example of a nicely formatted table, using the kable function
-
-iris |> group_by(Species) |> summarise( Count = n(), `Avg Sepal Length` = round(mean(Sepal.Length), 1), `Avg Petal Length` = round(mean(Petal.Length), 1) ) |> kable(caption = "Comparison of Iris Species")
-```
-
-Insights for Q1
-
-Question #2: [Name - Question Statement]
-
-[Repeat structure from Q1]
-
-Q2: Variables & Approach
-
-Q2: Visualization
-
-Q2: Summary Table
-
-## Question #3: [Caellum Yip Hoi - Lee - Renewable Presence and Power Reliability]
+## Question #1: [Caellum Yip Hoi - Lee - Renewable Presence and Power Reliability]
 Do countries with a higher share of renewable energy in the generation mix tend to experience more frequent power interruptions?
 
-## Q3: Variables & Approach
+## Q1: Variables & Approach
 **Variables used:**
 
 - **renewables_share_gen_mix_percent:**
@@ -251,8 +208,8 @@ To intuitively compare reliability, I can group countries based on their renewab
 - renewable_group: "Low" when renewables_share_gen_mix_percent is below 20%, "Medium" when it is between 20-50%, and "High" when above 50%
   
   
-## Q3: Visualization
-```{r q3-plot}
+## Q1: Visualization
+```{r q1-plot}
 CATF_data |>
   # An extreme outlier of 65,000 % exists in the data, filtered this out because it makes no sense and is likely a typo. 
   filter(renewables_share_gen_mix_percent <= 100) |> 
@@ -266,9 +223,9 @@ CATF_data |>
   )
 ```
 
-## Q3: Summary Table
+## Q1: Summary Table
 
-```{r q3-table}
+```{r q1-table}
 CATF_data |>
   # An extreme outlier of 65,000 % exists in the data, filtered this out because it makes no sense and is likely a typo. 
   filter(renewables_share_gen_mix_percent <= 100) |>
@@ -290,11 +247,50 @@ CATF_data |>
   kable(caption = "Average System Interruptions (SAIFI) by Renewable Energy Share")
 ```
 
-## Q3: Insights & Takeaways
+## Q1: Insights & Takeaways
 
 * **No clear linear relationship:** The scatter plot has a nearly flat trend line, suggesting that a higher share of renewables in the generation mix is not correlated with a higher frequency of power interruptions.
 * **Reliability driven by other factors:** Countries with high interruption frequencies had widely varying levels of renewable energy in their generation mix. This suggests that issues with reliability and the subsequent SAIFI score likely has more to do with other factors, i.e infrastructure. 
 * **Renewables not sacrificing stability:** I see this evidence as positive, since it suggests that African electricity systems can have higher percentages of renewable energy without directly inducing a lower electric grid reliability.
+
+
+Question #2: [Name - Question Statement]
+
+[Repeat structure from Q1]
+
+Q2: Variables & Approach
+
+Q2: Visualization
+
+Q2: Summary Table
+
+## Question #3: [Name - Question Statement]
+
+[Clear statement of the research question]
+
+## Q3: Variables & Approach
+
+Variables used:
+
+[List variables]
+
+New variables/groups defined:
+
+[Any created variables]
+
+## Q3: Visualization
+
+```{r q3-plot}
+#Your plot code here
+```
+
+## Q3: Summary Table
+
+```{r q3-table}
+#Your summary table here
+```
+
+## Insights for Q3
 
 
 ## Question #4: [Sahand Samadirad - Revenue Collection and Renewable Capacity]
