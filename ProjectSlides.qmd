@@ -95,14 +95,16 @@ character_cols <- CATF_data |> select(where(is.character), -country) |> names()
 
 # --- aggregate -----------------------------------------------
 
-CATF_clean <- CATF_data |> group_by(country) |> summarise( # For every numeric column, take the median (ignoring NAs) across(all_of(numeric_cols), function(x){ median(x, na.rm = TRUE) }),
-
-# For every character column, take the mode
-across(all_of(character_cols), stat_mode),
-
-# (optional) track how many student rows were combined
-n_sources = n()
-)
+CATF_clean <- CATF_data |> 
+  group_by(country) |> 
+  summarise(
+    # For every numeric column, take the median (ignoring NAs)
+    across(all_of(numeric_cols), function(x){ median(x, na.rm = TRUE) }),
+    # For every character column, take the mode
+    across(all_of(character_cols), stat_mode),
+    # (optional) track how many student rows were combined
+    n_sources = n()
+  )
 
 # --- quick check ---------------------------------------------
 
