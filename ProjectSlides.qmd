@@ -62,6 +62,9 @@ Data Wrangling:
 
 Do countries with a higher share of renewable energy in the generation mix tend to experience more frequent power interruptions?
 
+* **Relevance:** As African nations develop their grids, transitioning to renewable energy is a priority. Understanding how the shift to renewables could impact energy reliability may be helpful in leading responsible development. 
+* **Connection to Theme:** This investigates a potential trade-off between two core areas of the CATF-ESPS: renewable energy development and power grid stability.
+
 ## Q1: Variables & Approach
 
 **Variables used:**
@@ -109,7 +112,8 @@ CATF_data |>
   mutate(renewable_group = factor(renewable_group, levels = c("Low (<20%)", "Medium (20–50%)", "High (>50%)"))) |>
   group_by(renewable_group) |>
   summarise(
-    Countries = n(),
+    Countries = n_distinct(country),
+    Observations = n(),
     `Avg Renewable Share (%)` = round(mean(renewables_share_gen_mix_percent, na.rm = TRUE), 1),
     `Avg SAIFI (Interruptions)` = round(mean(SAIFI, na.rm = TRUE), 1)
   ) |>
