@@ -264,7 +264,6 @@ q3_summary
 
 -   The median across both higher and lower groups was the same, further suggesting that renewable usage may not be explained solely by the private sectors role in power generation.
 
-
 ## Question #4: [Sahand Samadirad - Revenue Collection and Renewable Capacity]
 
 **Do countries with higher electricity revenue collection rates tend to have more installed renewable energy capacity?**
@@ -321,6 +320,8 @@ CATF_data |>
   )
 ```
 
+The y-axis is shown on a logarithmic scale to account for large differences in renewable capacity across countries.
+
 ## Q4: Summary Table
 
 ```{r q4-table}
@@ -361,6 +362,7 @@ CATF_data |>
 - Some collection rates exceed 100%, which may occur due to the recovery of past unpaid bills (arrears) or differences in reporting methods across countries. These values increase variability, especially in the high-collection group, and can influence the averages and spread of the data.
 - This analysis uses only observations with complete data for both variables, ensuring a **consistent and comparable sample** when examining the relationship. While this improves the validity of the comparison, it may introduce **selection bias**, as countries with missing renewable capacity data are excluded and may differ systematically from those included.
 - Overall, this suggests that while financial performance may play a role, **collection rate alone is not a strong predictor** of renewable energy development, and other factors such as country size, economic conditions, and policy likely have a greater impact.
+- In summary, there is only weak evidence that higher collection rates are associated with greater renewable energy capacity, and the relationship is not strong enough to suggest that collection rate is a key driver on its own.
 
 ## Overall Limitations
 
