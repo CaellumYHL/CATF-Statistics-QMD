@@ -1,7 +1,7 @@
 ---
-title: "Renewable Energy Development and Electricity System Performance in Africa"
-subtitle: "An Exploratory Analysis Using the CATF Electricity Sector Dataset"
-author: "Caellum Yip Hoi Lee | Paanini Kartik | Hyman Al-Qaissi | Sahand Samadirad | \n Group C"
+title: "Project Title"
+subtitle: "Project subtitle (if applicable)"
+author: "Your names | Group #X"
 date: today
 format:
   beamer:
@@ -40,44 +40,177 @@ knitr::opts_chunk$set(
 CATF_data <- read_csv("CATF_data.csv")
 ```
 
+```{r clean_data, include=FALSE}
+
+## Clean the data
+
+## E.g., remove unrealistic populations
+
+#CATF_data |> arrange(population) |> View()
+
+#CATF_data <- CATF_data |> filter(population > 100) ## Alternatively, we could convert them to the correct values for each country by ## seeing roughly what the population values for each country are and scaling up accordingly.
+
+# ============================================================
+
+# Aggregate CATF_data: one row per country
+
+# ============================================================
+
+# Each country has multiple rows (one per student). We collapse
+
+# them into a single row using sensible summary functions.
+
+# 
+
+# General strategy:
+
+# - numeric columns → median (robust to outliers / typos)
+
+# - character columns → mode (most common value reported)
+
+# 
+
+# Feel free to swap median() for mean() or mode() on any
+
+# variable if you think a different choice is more appropriate.
+
+# ============================================================
+
+# --- helper function: statistical mode (most frequent value) ----
+
+# works for both character and numeric vectors
+
+stat_mode <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) == 0) return(NA)
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+# --- identify column types --------------------------------------
+
+numeric_cols <- CATF_data |> select(where(is.numeric)) |> names()
+
+character_cols <- CATF_data |> select(where(is.character), -country) |> names()
+
+# --- aggregate -----------------------------------------------
+
+CATF_clean <- CATF_data |> 
+  group_by(country) |> 
+  summarise(
+    # For every numeric column, take the median (ignoring NAs)
+    across(all_of(numeric_cols), function(x){ median(x, na.rm = TRUE) }),
+    # For every character column, take the mode
+    across(all_of(character_cols), stat_mode),
+    # (optional) track how many student rows were combined
+    n_sources = n()
+  )
+
+# --- quick check ---------------------------------------------
+
+#glimpse(CATF_clean)
+
+# How many unique countries do we have?
+
+#nrow(CATF_clean)
+
+# ============================================================
+
+# CUSTOMISATION IDEAS
+
+# ============================================================
+
+# If you'd prefer to use the mean for some variables and the
+
+# median for others, you can split them up like this:
+
+# 
+
+# CATF_clean <- CATF_data |>
+
+# group_by(country) |>
+
+# summarise(
+
+# # Variables where mean makes sense
+
+# across(c(gdp, population),
+
+# function(x){ mean(x, na.rm = TRUE) } ),
+
+# 
+
+# # Variables where median is more robust
+
+# across(c(poverty_rate, hdi, median_age),
+
+# function(x){ median(x, na.rm = TRUE) } ),
+
+# 
+
+# # Variables where mode makes sense (e.g. categorical-ish)
+
+# across(c(renewable_target_solar, renewable_target_wind),
+
+# stat_mode),
+
+# 
+
+# n_sources = n()
+
+# )
+
+# ============================================================
+
+```
+
 Introduction
 
-Overall Theme: Patterns and drivers of renewable energy development across African electricity systems
+Overall Theme: [Patterns and drivers of renewable energy development across African electricity systems]
 
-Research Goal: Investigate how renewable energy usage is different among African electricity systems and explore factors that may be associated with differences in renewable energy capacity between countries.
+Research Goal: [Investigate how renewable energy usage is different among African electricity systems and explore factors that may be associated with differences in renewable energy capacity between countries.]
 
-Target Population: The study focuses on African countries included in the CATF electricity sector dataset.
+Target Population: [The study focuses on African countries included in the CATF electricity sector dataset.]
 
-Audience: The primary audience is Clean Air Task Force (CATF) staff, who are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).
+Audience: [The primary audience is Clean Air Task Force (CATF) staff, who are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).]
 
 Data Summary
 
 The dataset contains country-level indicators describing electricity system performance across African countries. These indicators capture areas such as electricity access, reliability, infrastructure development, financial performance, and renewable energy capacity.
 
+Key Variables:
+
+Variable 1: [Description]
+
+Variable 2: [Description]
+
 Data Wrangling:
 
-\- To facilitate comparison across countries, the variable `collection_rate_percent` was grouped into categories representing different levels of electricity revenue collection performance. A new variable called `collection_group` was created in the `CATF_data` dataset. The groups are defined as Low (\<70%), Medium (70–90%), and High (\>90%). This transformation allows us to compare `total_installed_variable_renewables_capacity` across countries with different levels of revenue collection performance.
+[- To facilitate comparison across countries, the variable `collection_rate_percent` was grouped into categories representing different levels of electricity revenue collection performance. A new variable called `collection_group` was created in the `CATF_data` dataset. The groups are defined as Low (<70%), Medium (70–90%), and High (>90%). This transformation allows us to compare `total_installed_variable_renewables_capacity` across countries with different levels of revenue collection performance.
+]
 
-## Question #1: \[Caellum Yip Hoi - Lee - Renewable Presence and Power Reliability\]
-
+## Question #1: [Caellum Yip Hoi - Lee - Renewable Presence and Power Reliability]
 Do countries with a higher share of renewable energy in the generation mix tend to experience more frequent power interruptions?
 
 ## Q1: Variables & Approach
-
 **Variables used:**
 
--   **renewables_share_gen_mix_percent:** The percentage of electricity generation coming from renewable energy sources. This variable captures the amount of renewable energy being employed in the country's electricity system.
+- **renewables_share_gen_mix_percent:**
+  The percentage of electricity generation coming from renewable energy sources.
+  This variable captures the amount of renewable energy being employed in the country's electricity system.
 
--   **SAIFI:** System Average Interruption Frequency Index, representing Voltage Quality / Frequency It is the total number of reported interruptions divided by total customers. This variable serves as a primary measure of power reliability.
-
+- **SAIFI:**
+  System Average Interruption Frequency Index, representing Voltage Quality / Frequency 
+  It is the total number of reported interruptions divided by total customers. This variable serves as a primary measure of power reliability.
+  
 **New variables/groups defined:**
 
 To intuitively compare reliability, I can group countries based on their renewable generation share:
 
--   renewable_group: "Low" when renewables_share_gen_mix_percent is below 20%, "Medium" when it is between 20-50%, and "High" when above 50%
-
+- renewable_group: "Low" when renewables_share_gen_mix_percent is below 20%, "Medium" when it is between 20-50%, and "High" when above 50%
+  
+  
 ## Q1: Visualization
-
 ```{r q1-plot}
 CATF_data |>
   # An extreme outlier of 65,000 % exists in the data, filtered this out because it makes no sense and is likely a typo. 
@@ -118,83 +251,22 @@ CATF_data |>
 
 ## Q1: Insights & Takeaways
 
--   **No clear linear relationship:** The scatter plot has a nearly flat trend line, suggesting that a higher share of renewables in the generation mix is not correlated with a higher frequency of power interruptions.
--   **Reliability driven by other factors:** Countries with high interruption frequencies had widely varying levels of renewable energy in their generation mix. This suggests that issues with reliability and the subsequent SAIFI score likely has more to do with other factors, i.e infrastructure.
--   **Renewables not sacrificing stability:** I see this evidence as positive, since it suggests that African electricity systems can have higher percentages of renewable energy without directly inducing a lower electric grid reliability.
+* **No clear linear relationship:** The scatter plot has a nearly flat trend line, suggesting that a higher share of renewables in the generation mix is not correlated with a higher frequency of power interruptions.
+* **Reliability driven by other factors:** Countries with high interruption frequencies had widely varying levels of renewable energy in their generation mix. This suggests that issues with reliability and the subsequent SAIFI score likely has more to do with other factors, i.e infrastructure. 
+* **Renewables not sacrificing stability:** I see this evidence as positive, since it suggests that African electricity systems can have higher percentages of renewable energy without directly inducing a lower electric grid reliability.
 
-## Question #2: \[Paanini Kartik - Development and Renewable Energy Usage\]
 
-Do more developed countries tend to generate a higher or lower proportion of renewable energy?
+Question #2: [Name - Question Statement]
 
-## Q2: Variables & Approach
+[Repeat structure from Q1]
 
-**Variables from data:**
+Q2: Variables & Approach
 
--   **hdi** The Human Development Index of a given country. This will be used as a metric for how developed the country is.
--   **renewables_share_gen_mix_percent** What % of the country's generation comes from renewables. We use this instead of total_installed_renewables_capacity as that may trivially become higher with more development.
+Q2: Visualization
 
-**Created variables:**
+Q2: Summary Table
 
-In order to group countries based on their HDI to facilitate better comparison, we will use the HDI standard, as detailed by the UNDP.
-
--   **hdi_grouping** "Low" when the HDI is less than 0.5. "Medium" when it is \>=0.5 and \<0.7. "High" when it is \>=0.7 and \<0.8. "Very high" when it is \>=0.8.
-
-## Q2: Visualization
-
-```{r q2-plot}
-CATF_data |>
-  filter(!is.na(hdi), !is.na(renewables_share_gen_mix_percent)) |>
-  filter(renewables_share_gen_mix_percent <= 100 &
-         renewables_share_gen_mix_percent >= 0) |>
-  filter(hdi >= 0 & hdi <= 1) |> # remove invalid values
-  ggplot(aes(x = hdi, y = renewables_share_gen_mix_percent)) +
-  geom_point(color = "darkred", size = 3) +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
-  labs(
-    x = "Human Development Index (HDI)",
-    y = "Renewables Share of Generation Mix (%)",
-    title = "Development Level vs Renewable Energy Usage"
-  )
-```
-
-## Q2: Summary Table
-
-```{r q2-table}
-CATF_data |>
-  filter(!is.na(hdi), !is.na(renewables_share_gen_mix_percent)) |>
-  filter(renewables_share_gen_mix_percent <= 100 &
-         renewables_share_gen_mix_percent >= 0) |>
-  filter(hdi >= 0 & hdi <= 1) |> # remove invalid values
-  mutate(
-    hdi_grouping = case_when(
-      hdi < 0.5 ~ "Low (<0.5)",
-      hdi >= 0.5 & hdi < 0.7 ~ "Medium (0.5–0.7)",
-      hdi >= 0.7 & hdi < 0.8 ~ "High (0.7–0.8)",
-      hdi >= 0.8 ~ "Very High (>=0.8)"
-    )
-  ) |>
-  mutate(
-    hdi_grouping = factor(
-      hdi_grouping,
-      levels = c("Low (<0.5)", "Medium (0.5–0.7)", "High (0.7–0.8)", "Very High (>=0.8)")
-    )
-  ) |>
-  group_by(hdi_grouping) |>
-  summarise(
-    Countries = n(),
-    `Avg HDI` = round(mean(hdi, na.rm = TRUE), 2),
-    `Avg Renewable Share (%)` = round(mean(renewables_share_gen_mix_percent, na.rm = TRUE), 1)
-  ) |>
-  kable(caption = "Renewable Energy Share by HDI Development Group")
-```
-
-## Q2: Insights & Takeaways
-
--   Visually speaking, there appears to be a slight negative correlation between the two variables, given the line of best fit having a slightly negative slope.
--   However, there appears to be a large spread in the data, with data points not clustering around said line. Moreover, there are less countries with higher HDI values than lower ones, as apparent by the summary table.
--   As a result, further hypothesis testing soon to be done will be able to give a stronger claim for whether or not a negative correlation truly exists.
-
-## Question #3: \[Hyman - Private Sector Participation and Renewable Energy Adoption\]
+## Question #3: [Hyman - Question Statement]
 
 Is private sector participation in power generation associated with renewable energy adoption in African countries?
 
@@ -202,18 +274,18 @@ Is private sector participation in power generation associated with renewable en
 
 **Variables used:**
 
--   private_sector_power_gen_commercial
--   renewables_share_gen_mix_percent
--   installed_gen_capacity
+- private_sector_power_gen_commercial
+- renewables_share_gen_mix_percent
+- installed_gen_capacity
 
 **New variables/groups defined:**
 
--   private_generation_share \<- private_sector_power_gen_commercial / installed_gen_capacity
+- private_generation_share <- private_sector_power_gen_commercial / installed_gen_capacity
 
 ## Q3: Visualization
 
 ```{r q3-plot}
-CATF_clean <- read_csv("CATF_data.csv")|>
+CATF_clean <- CATF_clean |>
   filter(
     !is.na(private_sector_power_gen_commercial),
     !is.na(installed_gen_capacity),
@@ -254,11 +326,11 @@ q3_summary
 
 ## Insights for Q3
 
--   There is no clear and strong relationship between private sector participation in power generation and renewable usage.
+- There is no clear and strong relationship between private sector participation in power generation and renewable usage.
 
--   Countires with lower private participation have a variety of renewable outcomes, whilst countries with higher private participation did not have higher renewable outcomes.
+- Countires with lower private participation have a variety of renewable outcomes, whilst countries with higher private participation did not have higher renewable outcomes.
 
--   The median across both higher and lower groups was the same, further suggesting that renewable usage may not be explained solely by the private sectors role in power generation.
+- The median across both higher and lower groups was the same, further suggesting that renewable usage may not be explained solely by the private sectors role in power generation.
 
 
 ## Question #4: [Sahand Samadirad - Revenue Collection and Renewable Capacity]
@@ -279,21 +351,21 @@ Countries with higher electricity revenue collection rates will tend to have **g
 
 **Variables used:**
 
--   **collection_rate_percent**\
-    Percentage of billed electricity revenue that utilities successfully collect.\
-    This variable reflects the financial efficiency and operational performance of electricity utilities.
+- **collection_rate_percent**\
+  Percentage of billed electricity revenue that utilities successfully collect.\
+  This variable reflects the financial efficiency and operational performance of electricity utilities.
 
--   **total_installed_variable_renewables_capacity**\
-    Total installed capacity of variable renewable energy sources such as wind and solar (MW).\
-    This variable represents the level of renewable energy development within a country's electricity system.
+- **total_installed_variable_renewables_capacity**\
+  Total installed capacity of variable renewable energy sources such as wind and solar (MW).\
+  This variable represents the level of renewable energy development within a country's electricity system.
 
 **New variables/groups defined:**
 
 To make comparisons clearer, countries are grouped based on electricity revenue collection performance:
 
--   Low collection rate: below 70%\
--   Medium collection rate: 70–90%\
--   High collection rate: above 90%
+- Low collection rate: below 70%\
+- Medium collection rate: 70–90%\
+- High collection rate: above 90%
 
 These categories allow us to compare renewable capacity across different levels of financial performance.
 
@@ -361,15 +433,36 @@ CATF_data |>
 ## Overall Limitations
 
 Data Limitations:
-
--   **Data Collection:** The CATF data was collected by student internet searches. This introduces lots of room for inaccuracies, since data points may come from different years or use different definitions.
-
--   **Inaccuracies in data:** Outliers such as the 65 000% renewables_share_gen_mix indicate that the data set contains some inaccurate data that will impact the results of the research.
-
--   **Missing Data:** Many African countries may lack the necessary infrastructure to report all the variables in the dataset. This may skew the results of research; it may cause the less wealthy countries to be less represented in the dataset.
+* **Data Collection: ** The CATF data was collected by student internet searches. This introduces lots of room for inaccuracies, since data points may come from different years or use different definitions. 
+* **Inaccuracies in data:** Outliers such as the 65 000% renewables_share_gen_mix indicate that the data set contains some inaccurate data that will impact the results of the research.
+* **Missing Data:** Many African countries may lack the necessary infrastructure to report all the variables in the dataset. This may skew the results of research; it may cause the less wealthy countries to be less represented in the dataset.
 
 ## Future Directions
 
--   **Standardized Data Collection:** To reduce inaccuracies introduced by varying methods of data collection, the CATF dataset could be collected only from standardized global databases, i.e World Bank. This would minimize inconsistent value but may lead to more values being dropped.
--   **Data Cleansing:** To improve the removal of extreme outliers (like the 65,000% renewable share), strict checks could be implemented during data entry to automatically remove physically impossible values before analysis. For example, a check could be implemented to ensure that the values inputted in the renewables_share_gen_mix are never greater than 100.
--   **Inclusive Data Collection Methods:** Instead of collecting data directly from the government records, globally available proxy data could be used to ensure that every country is included. While it is unfeasible to manually collect the data for each country, the CATF could use stand-in values as estimates. For example, the amount of imported solar panels could be used as a rough proxy for solar capacity.
+* **Standardized Data Collection:** To reduce inaccuracies introduced by varying methods of data collection, the CATF dataset could be collected only from standardized global databases, i.e World Bank. This would minimize inconsistent value but may lead to more values being dropped.
+* **Data Cleansing:** To improve the removal of extreme outliers (like the 65,000% renewable share), strict checks could be implemented during data entry to automatically remove physically impossible values before analysis. For example, a check could be implemented to ensure that the values inputted in the renewables_share_gen_mix are never greater than 100.
+* **Inclusive Data Collection Methods:** Instead of collecting data directly from the government records, globally available proxy data could be used to ensure that every country is included. While it is unfeasible to manually collect the data for each country, the CATF could use stand-in values as estimates. For example, the amount of imported solar panels could be used as a rough proxy for solar capacity. 
+
+Overall Conclusion
+
+Key Findings:
+
+[Finding 1 related to theme]
+
+[Finding 2 related to theme]
+
+[Finding 3 related to theme]
+
+Connection to Theme:
+
+[How findings relate back to unifying theme]
+
+References & Acknowledgements (if applicable)
+
+References:
+
+[Citation 1, if applicable]
+
+Acknowledgements:
+
+[Any acknowledgements, if applicable]
