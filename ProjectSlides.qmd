@@ -263,7 +263,17 @@ q3_summary
 
 ## Question #4: [Sahand Samadirad - Revenue Collection and Renewable Capacity]
 
-Do countries with higher electricity revenue collection rates tend to have more installed renewable energy capacity?
+**Do countries with higher electricity revenue collection rates tend to have more installed renewable energy capacity?**
+
+- Electricity revenue collection reflects the **financial health of utilities** and their ability to fund infrastructure.
+- Renewable energy projects require **high upfront investment**, making financing a key constraint.
+- Weak collection rates may limit investment, leading to **slower renewable energy development**.
+
+- This directly connects to our theme: identifying **drivers of renewable energy development in African electricity systems**.
+- Specifically, it tests whether **financial performance (collection rate)** influences renewable capacity expansion.
+
+**Hypothesis:**  
+Countries with higher electricity revenue collection rates will tend to have **greater installed renewable energy capacity** due to stronger financial capacity for investment.
 
 ## Q4: Variables & Approach
 
@@ -294,10 +304,16 @@ CATF_data |>
   ggplot(aes(x = collection_rate_percent, y = total_installed_variable_renewables_capacity)) +
   geom_point(color = "darkgreen", size = 3) +
   geom_smooth(method = "lm", se = FALSE, color = "black") +
+  scale_y_log10() +
   labs(
     x = "Electricity Revenue Collection Rate (%)",
     y = "Installed Renewable Energy Capacity (MW)",
     title = "Collection Rate vs Renewable Energy Capacity"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor = element_blank(),   # removes dense log gridlines
+    panel.grid.major = element_line(color = "grey80")  # keeps clean standard grid
   )
 ```
 
@@ -305,6 +321,10 @@ CATF_data |>
 
 ```{r q4-table}
 CATF_data |>
+  filter(
+    !is.na(collection_rate_percent),
+    !is.na(total_installed_variable_renewables_capacity)
+  ) |>
   mutate(
     collection_group = case_when(
       collection_rate_percent < 70 ~ "Low (<70%)",
@@ -312,14 +332,31 @@ CATF_data |>
       TRUE ~ "High (>90%)"
     )
   ) |>
+  mutate(
+    collection_group = factor(
+      collection_group,
+      levels = c("Low (<70%)", "Medium (70–90%)", "High (>90%)")
+    )
+  ) |>
   group_by(collection_group) |>
   summarise(
     Countries = n(),
     `Avg Collection Rate (%)` = round(mean(collection_rate_percent, na.rm = TRUE), 1),
-    `Avg Renewable Capacity (MW)` = round(mean(total_installed_variable_renewables_capacity, na.rm = TRUE), 1)
+    `SD Collection Rate (%)` = round(sd(collection_rate_percent, na.rm = TRUE), 1),
+    `Avg Renewable Capacity (MW)` = round(mean(total_installed_variable_renewables_capacity, na.rm = TRUE), 1),
+    `SD Renewable Capacity (MW)` = round(sd(total_installed_variable_renewables_capacity, na.rm = TRUE), 1)
   ) |>
-  kable(caption = "Average Renewable Capacity by Collection Rate Category")
+  kable(caption = "Renewable Capacity by Collection Rate Category")
 ```
+
+## Insights for Q4
+
+- The scatterplot and regression line suggest a **weak positive relationship** between electricity revenue collection rate and installed renewable energy capacity.
+- Countries with higher collection rates tend to have **higher average renewable capacity**, but there is **substantial variation within each group**, particularly in the high-collection category.
+- The fitted linear regression line has a **slightly positive slope**, but the wide spread of data points indicates **low explanatory power**, meaning the model does not explain much of the variation in renewable capacity.
+- Some collection rates exceed 100%, which may occur due to the recovery of past unpaid bills (arrears) or differences in reporting methods across countries. These values increase variability, especially in the high-collection group, and can influence the averages and spread of the data.
+- This analysis uses only observations with complete data for both variables, ensuring a **consistent and comparable sample** when examining the relationship. While this improves the validity of the comparison, it may introduce **selection bias**, as countries with missing renewable capacity data are excluded and may differ systematically from those included.
+- Overall, this suggests that while financial performance may play a role, **collection rate alone is not a strong predictor** of renewable energy development, and other factors such as country size, economic conditions, and policy likely have a greater impact.
 
 ## Overall Limitations
 
