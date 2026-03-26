@@ -1,7 +1,7 @@
 ---
 title: "Renewable Energy Development and Electricity System Performance in Africa"
 subtitle: "An Exploratory Analysis Using the CATF Electricity Sector Dataset"
-author: "Caellum Yip Hoi Lee | Paanini Kartik | Hyman Al-Qaissi | Sahand Samadirad | \n Group C"
+author: "Caellum Yip Hoi Lee | Paanini Kartik | Hyman Al-Qaissi | Sahand Samadirad | \n Group C TUT0203"
 date: today
 format:
   beamer:
@@ -63,7 +63,7 @@ Data Wrangling:
 
 Do countries with a higher share of renewable energy in the generation mix tend to experience more frequent power interruptions?
 
-* **Relevance:** As African nations develop their grids, transitioning to renewable energy is a priority. Understanding how the shift to renewables could impact energy reliability may be helpful in leading responsible development. 
+* **Relevance:** As African nations develop electric grids, transitioning to renewable energy is a priority. Understanding how the shift to renewable sources could impact energy reliability may be helpful in leading effective infrastructure development. 
 * **Connection to Theme:** This investigates a potential trade-off between two core areas of the CATF-ESPS: renewable energy development and power grid stability.
 
 ## Q1: Variables & Approach
@@ -80,52 +80,80 @@ To intuitively compare reliability, I can group countries based on their renewab
 
 -   renewable_group: "Low" when renewables_share_gen_mix_percent is below 20%, "Medium" when it is between 20-50%, and "High" when above 50%
 
+These cutoffs are established by the International Energy Agency (IEA). 20% marks the Phase 3 engineering tipping point for grid modernization, while 50% is the standard benchmark for renewables integration studies (IEA Wind Task 25 & PVPS Task 14).
+
 ## Q1: Visualization
 
 ```{r q1-plot}
-CATF_data |>
-  # An extreme outlier of 65,000 % exists in the data, filtered this out because it makes no sense and is likely a typo. 
-  filter(renewables_share_gen_mix_percent <= 100) |> 
-  ggplot(aes(x = renewables_share_gen_mix_percent, y = SAIFI)) +
-  geom_point(color = "steelblue", size = 3) +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
-  labs(
-    x = "Renewables Share in Generation Mix (%)",
-    y = "Frequency of Interruptions (SAIFI)",
-    title = "Renewable Energy Share vs Power Reliability"
+country_level_data <- CATF_data |>
+  group_by(country) |>
+  summarise(
+    country_renewable_share = median(renewables_share_gen_mix_percent, na.rm = TRUE),
+    country_SAIFI = median(SAIFI, na.rm = TRUE)
+  ) |>
+  filter(!is.na(country_renewable_share) & !is.na(country_SAIFI)) |>
+  # This is impossible and obviously a typo, so it can be filtered out. 
+  filter(country_renewable_share <= 100)
+
+q1_data <- country_level_data |>
+  mutate(
+    renewable_group = case_when(
+      country_renewable_share < 20 ~ "Low (<20%)",
+      country_renewable_share >= 20 & country_renewable_share <= 50 ~ "Medium (20–50%)",
+      country_renewable_share > 50  ~ "High (>50%)"
+    ),
+    renewable_group = factor(renewable_group, levels = c("Low (<20%)", "Medium (20–50%)", "High (>50%)"))
   )
+
+plot_zoomed <- ggplot(q1_data, aes(x = renewable_group, y = country_SAIFI, fill = renewable_group)) +
+  geom_boxplot(alpha = 0.6, outlier.color = "red") +
+  coord_cartesian(ylim = c(0, 150)) + 
+  labs(
+    x = "Renewable Share",
+    y = "Interruptions (SAIFI)",
+    title = "Typical Reliability (Zoomed)",
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+plot_full <- ggplot(q1_data, aes(x = renewable_group, y = country_SAIFI, fill = renewable_group)) +
+  geom_boxplot(alpha = 0.6, outlier.color = "red") +
+  labs(
+    x = "Renewable Share",
+    y = "", 
+    title = "Full Reliability",
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+plot_grid(plot_zoomed, plot_full, ncol = 2)
+
+
 ```
 
 ## Q1: Summary Table
 
 ```{r q1-table}
-CATF_data |>
-  # An extreme outlier of 65,000 % exists in the data, filtered this out because it makes no sense and is likely a typo. 
-  filter(renewables_share_gen_mix_percent <= 100) |>
-  mutate(
-    renewable_group = case_when(
-      renewables_share_gen_mix_percent < 20 ~ "Low (<20%)",
-      renewables_share_gen_mix_percent <= 50 & renewables_share_gen_mix_percent >= 20 ~ "Medium (20–50%)",
-      renewables_share_gen_mix_percent > 50  ~ "High (>50%)"
-    )
-  ) |>
-  
-  mutate(renewable_group = factor(renewable_group, levels = c("Low (<20%)", "Medium (20–50%)", "High (>50%)"))) |>
+q1_data |>
   group_by(renewable_group) |>
   summarise(
     Countries = n_distinct(country),
-    Observations = n(),
-    `Avg Renewable Share (%)` = round(mean(renewables_share_gen_mix_percent, na.rm = TRUE), 1),
-    `Avg SAIFI (Interruptions)` = round(mean(SAIFI, na.rm = TRUE), 1)
+    `Avg Renewable Share (%)` = round(mean(country_renewable_share, na.rm = TRUE), 1),
+    `Avg SAIFI` = round(mean(country_SAIFI, na.rm = TRUE), 1),
+    `Max SAIFI` = round(max(country_SAIFI, na.rm = TRUE), 1),
+    `Extreme Outages (>200 SAIFI)` = sum(country_SAIFI > 200, na.rm = TRUE)
   ) |>
-  kable(caption = "Average System Interruptions (SAIFI) by Renewable Energy Share")
+  rename(`Renewable Group` = renewable_group) |>
+  kable(caption = "System Interruptions and Extreme Outages by Renewable Energy Share")
+
 ```
 
 ## Q1: Insights & Takeaways
 
--   **No clear linear relationship:** The scatter plot has a nearly flat trend line, suggesting that a higher share of renewables in the generation mix is not correlated with a higher frequency of power interruptions.
+-   **Medium Power Share Stability:** Countries with a moderate renewable energy share (those with around 20-50%) exhibited the most stable and reliable grids, with a tight spread around the median and a lack of extreme outliers. 
+-   **Extremes in every group:** The Low (<20%) energy share group has the most unpredictable reliability. While the median is relatively low, this group contains massive, catastrophic outliers (with SAIFI scores reaching over 600).
 -   **Reliability driven by other factors:** Countries with high interruption frequencies had widely varying levels of renewable energy in their generation mix. This suggests that issues with reliability and the subsequent SAIFI score likely has more to do with other factors, i.e infrastructure.
--   **Renewables not sacrificing stability:** I see this evidence as positive, since it suggests that African electricity systems can have higher percentages of renewable energy without directly inducing a lower electric grid reliability.
+-   **Overall CATF Takeaway:** The data suggests that integrating renewable energy does not sacrifice stability. A mixed grid (20-50% renewables) performs the best, and transitioning to high renewables has more evidence of being safer than remaining in a low-renewable, traditional grid.
 
 ## Question #2: \[Paanini Kartik - Development and Renewable Energy Usage\]
 
