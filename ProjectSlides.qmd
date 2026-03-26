@@ -129,20 +129,24 @@ CATF_data |>
 
 ## Question #2: \[Paanini Kartik - Development and Renewable Energy Usage\]
 
-Do more developed countries tend to generate a higher or lower proportion of renewable energy?
+**Do more developed countries tend to generate a higher or lower proportion of renewable energy?**
+
+-  From one perspective, we may expect to see developed countries have a **higher proportion** of their energy generation capabilities come from renewable energy, given there is more capital available to invest and higher levels of education could mean more skilled workers capable to building renewable energy sources.
+
+-  From another perspective, we may expect to see developed countries have a **lower share in renewables**, as their higher development may correlate with the choice to use cheaper sources of energy such as oil and coal.
+
+-  Understanding how development correlates with renewables is crucial to understanding electricty systems in Africa and how renewable usage is distributed in the continent.
 
 ## Q2: Variables & Approach
 
 **Variables from data:**
 
--   **hdi** The Human Development Index of a given country. This will be used as a metric for how developed the country is.
+-   **hdi** The Human Development Index of a given country. This will be used as a metric for how developed the country is, where HDI measures factors such as life expectancy, education, and GNI to assess how developed a country is.
 -   **renewables_share_gen_mix_percent** What % of the country's generation comes from renewables. We use this instead of total_installed_renewables_capacity as that may trivially become higher with more development.
 
 **Created variables:**
 
-In order to group countries based on their HDI to facilitate better comparison, we will use the HDI standard, as detailed by the UNDP.
-
--   **hdi_grouping** "Low" when the HDI is less than 0.5. "Medium" when it is \>=0.5 and \<0.7. "High" when it is \>=0.7 and \<0.8. "Very high" when it is \>=0.8.
+We will create a new variable by grouping countries based on their HDI using the standard detailed by the UNDP, which defines: "Low HDI" as less than 0.5, "Medium HDI" as between 0.5 and 0.699, "High HDI" as between 0.7 and 0.799, and "Very High HDI" as 0.8 and above.
 
 ## Q2: Visualization
 
@@ -173,7 +177,7 @@ CATF_data |>
   mutate(
     hdi_grouping = case_when(
       hdi < 0.5 ~ "Low (<0.5)",
-      hdi >= 0.5 & hdi < 0.7 ~ "Medium (0.5–0.7)",
+      hdi >= 0.5 & hdi < 0.7 ~ "Med. (0.5–0.7)",
       hdi >= 0.7 & hdi < 0.8 ~ "High (0.7–0.8)",
       hdi >= 0.8 ~ "Very High (>=0.8)"
     )
@@ -181,23 +185,52 @@ CATF_data |>
   mutate(
     hdi_grouping = factor(
       hdi_grouping,
-      levels = c("Low (<0.5)", "Medium (0.5–0.7)", "High (0.7–0.8)", "Very High (>=0.8)")
+      levels = c("Low (<0.5)", "Med. (0.5–0.7)", "High (0.7–0.8)", "Very High (>=0.8)")
     )
   ) |>
   group_by(hdi_grouping) |>
   summarise(
-    Countries = n(),
+  Countries = n(),
     `Avg HDI` = round(mean(hdi, na.rm = TRUE), 2),
-    `Avg Renewable Share (%)` = round(mean(renewables_share_gen_mix_percent, na.rm = TRUE), 1)
-  ) |>
-  kable(caption = "Renewable Energy Share by HDI Development Group")
+    `HDI SD` = round(sd(hdi, na.rm = TRUE), 2),
+    `Avg Renewable Share (%)` = round(mean(renewables_share_gen_mix_percent, na.rm = TRUE), 1),
+    `Renewable Share SD` = round(sd(renewables_share_gen_mix_percent, na.rm = TRUE), 1)
+) |> rename(`HDI Group` = hdi_grouping) |>
+     kable(caption = "Renewable Energy Share by HDI Development Group")
+```
+
+## Q2: Linear Model Output
+
+```{r q2-lm}
+lm_q2 <- CATF_data |>
+  filter(!is.na(hdi), !is.na(renewables_share_gen_mix_percent)) |>
+  filter(renewables_share_gen_mix_percent <= 100 &
+         renewables_share_gen_mix_percent >= 0) |>
+  filter(hdi >= 0 & hdi <= 1) |>
+  lm(renewables_share_gen_mix_percent ~ hdi, data = _) |>
+  tidy()
+
+tibble(
+  Term = c("Intercept", "Slope (HDI)"),
+  Estimate = c(
+    lm_q2 |> filter(term == "(Intercept)") |> select(estimate) |> pull(),
+    lm_q2 |> filter(term == "hdi") |> select(estimate) |> pull()
+  ),
+  `p-Value` = c(
+    lm_q2 |> filter(term == "(Intercept)") |> select(p.value) |> pull(),
+    lm_q2 |> filter(term == "hdi") |> select(p.value) |> pull()
+  )
+) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  kable(caption = "Linear Model: Renewables Share ~ HDI", align = "c")
 ```
 
 ## Q2: Insights & Takeaways
 
--   Visually speaking, there appears to be a slight negative correlation between the two variables, given the line of best fit having a slightly negative slope.
--   However, there appears to be a large spread in the data, with data points not clustering around said line. Moreover, there are less countries with higher HDI values than lower ones, as apparent by the summary table.
--   As a result, further hypothesis testing soon to be done will be able to give a stronger claim for whether or not a negative correlation truly exists.
+-   Visually speaking, there appears to be a **slight negative correlation** between the two variables, given the line of best fit having a slightly negative slope.
+-   However, there appears to be a large spread in the data, with data points not clustering around said line. The spread is more pronounced for countries with lower HDI scores, with their standard deviations being around 30, while countries with higher HDI scores have standard deviations at around 20 or less.
+-   Despite this, the **p-value of 0.001 and 0.000 for the slope and intercept respectively** are well below the common alpha threshold of 0.05, which suggests that the correlation is definite and **we have strong evidence to reject the null hypothesis**. Thus, we can conclude there is a negative correlation between how developed a country is and what % of its energy comes from renewables.
+-   With this information, it would be beneficial to understand why this negative correlation exists so as to eliminate the gap and encourage more renewable usage in the more developed countries in Africa.
 
 ## Question #3: \[Hyman - Private Sector Participation and Renewable Energy Adoption\]
 
