@@ -159,9 +159,7 @@ q1_data |>
 
 **Do more developed countries tend to generate a higher or lower proportion of renewable energy?**
 
--  From one perspective, we may expect to see developed countries have a **higher proportion** of their energy generation capabilities come from renewable energy, given there is more capital available to invest and higher levels of education could mean more skilled workers capable to building renewable energy sources.
-
--  From another perspective, we may expect to see developed countries have a **lower share in renewables**, as their higher development may correlate with the choice to use cheaper sources of energy such as oil and coal.
+-  From one perspective, we may expect to see developed countries have a **higher proportion** of their energy generation capabilities come from renewable energy, given there is more capital available to invest and higher levels of education could mean more skilled workers capable to building renewable energy sources, while from another, we may expect to see developed countries have a **lower share in renewables**, as their higher development may correlate with the choice to use cheaper sources of energy such as oil and coal.
 
 -  Understanding how development correlates with renewables is crucial to understanding electricty systems in Africa and how renewable usage is distributed in the continent.
 
@@ -180,6 +178,11 @@ We will create a new variable by grouping countries based on their HDI using the
 
 ```{r q2-plot}
 CATF_data |>
+  group_by(country) |>
+  summarise(
+    hdi = median(hdi, na.rm = TRUE),
+    renewables_share_gen_mix_percent = mean(renewables_share_gen_mix_percent, na.rm = TRUE)
+  ) |>
   filter(!is.na(hdi), !is.na(renewables_share_gen_mix_percent)) |>
   filter(renewables_share_gen_mix_percent <= 100 &
          renewables_share_gen_mix_percent >= 0) |>
@@ -198,6 +201,11 @@ CATF_data |>
 
 ```{r q2-table}
 CATF_data |>
+  group_by(country) |>
+  summarise(
+    hdi = median(hdi, na.rm = TRUE),
+    renewables_share_gen_mix_percent = mean(renewables_share_gen_mix_percent, na.rm = TRUE)
+  ) |>
   filter(!is.na(hdi), !is.na(renewables_share_gen_mix_percent)) |>
   filter(renewables_share_gen_mix_percent <= 100 &
          renewables_share_gen_mix_percent >= 0) |>
@@ -231,6 +239,11 @@ CATF_data |>
 
 ```{r q2-lm}
 lm_q2 <- CATF_data |>
+  group_by(country) |>
+  summarise(
+    hdi = median(hdi, na.rm = TRUE),
+    renewables_share_gen_mix_percent = mean(renewables_share_gen_mix_percent, na.rm = TRUE)
+  ) |>
   filter(!is.na(hdi), !is.na(renewables_share_gen_mix_percent)) |>
   filter(renewables_share_gen_mix_percent <= 100 &
          renewables_share_gen_mix_percent >= 0) |>
@@ -256,9 +269,9 @@ tibble(
 ## Q2: Insights & Takeaways
 
 -   Visually speaking, there appears to be a **slight negative correlation** between the two variables, given the line of best fit having a slightly negative slope.
--   However, there appears to be a large spread in the data, with data points not clustering around said line. The spread is more pronounced for countries with lower HDI scores, with their standard deviations being around 30, while countries with higher HDI scores have standard deviations at around 20 or less.
--   Despite this, the **p-value of 0.001 and 0.000 for the slope and intercept respectively** are well below the common alpha threshold of 0.05, which suggests that the correlation is definite and **we have strong evidence to reject the null hypothesis**. Thus, we can conclude there is a negative correlation between how developed a country is and what % of its energy comes from renewables.
--   With this information, it would be beneficial to understand why this negative correlation exists so as to eliminate the gap and encourage more renewable usage in the more developed countries in Africa.
+-   However, there appears to be a large spread in the data, with data points not clustering around said line. The spread is more pronounced for countries with lower HDI scores, with their standard deviations being between 25-30, while countries with higher HDI scores have standard deviations less than 20.
+-   Morover, the **p-value of 0.142** we get for the slope is above the common alpha threshold of 0.05, which means **we have do not have enough evidence to reject the null hypothesis** and we cannot conclude that there is any correlation between.
+-   With this information, we may conclude that countries in Africa with lower and higher development tend to be equally far away from being fully green, and targetting either group specifically for increasing their renewable capabilities is not useful.
 
 ## Question #3: \[Hyman - Private Sector Participation and Renewable Energy Adoption\]
 
