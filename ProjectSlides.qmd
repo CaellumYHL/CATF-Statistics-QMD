@@ -49,7 +49,7 @@ Research Goal: Investigate how renewable energy usage is different among African
 
 Target Population: The study focuses on African countries included in the CATF electricity sector dataset.
 
-Audience: The primary audience is Clean Air Task Force (CATF) staff, who are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).
+Audience: The primary audience is Clean Air Task Force (CATF), a global non-governmental organization that seeks to mitigate climate change through development and deployment of low-carbon energy technologies. CATF staff are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).
 
 Data Summary
 
@@ -150,10 +150,10 @@ q1_data |>
 
 ## Q1: Insights & Takeaways
 
--   **Medium Power Share Stability:** Countries with a moderate renewable energy share (those with around 20-50%) exhibited the most stable and reliable grids, with a tight spread around the median and a lack of extreme outliers. 
--   **Extremes in every group:** The Low (<20%) energy share group has the most unpredictable reliability. While the median is relatively low, this group contains massive, catastrophic outliers (with SAIFI scores reaching over 600).
--   **Reliability driven by other factors:** Countries with high interruption frequencies had widely varying levels of renewable energy in their generation mix. This suggests that issues with reliability and the subsequent SAIFI score likely has more to do with other factors, i.e infrastructure.
--   **Overall CATF Takeaway:** The data suggests that integrating renewable energy does not sacrifice stability. A mixed grid (20-50% renewables) performs the best, and transitioning to high renewables has more evidence of being safer than remaining in a low-renewable, traditional grid.
+-   **Medium Power Share Stability:** Countries with a moderate renewable energy share (those with around 20-50%) exhibited the most stable and reliable grids. This group has the lowest average interruptions (13.6 SAIFI), the tightest visual spread, and zero extreme outliers, showing a strong association between a mixed generation profile and grid stability.
+-   **Extreme Outliers in Low Group:** The Low (<20%) energy share group displayed the most widespread variance. While the median for the group is relatively low, it contains massive, catastrophic outliers (with SAIFI scores reaching over 600).
+-   **High vs Low Integration: ** Countries in the High(>50%) renewable group had a slightly elevated median compared to the Medium and Low Groups, suggesting an overall increase in day-to-day fluctuations. However, the spread is significantly less than the low group, and the outliers are far less extreme. 
+-   **Overall CATF Takeaway:** While this analysis cannot establish direct causation, it suggests that integrating renewable energy does not sacrifice stability. A mixed grid (20-50% renewables) performs the best, and transitioning to high renewables has more evidence of being safer than remaining in a low-renewable, traditional grid.
 
 ## Question #2: \[Paanini Kartik - Development and Renewable Energy Usage\]
 
