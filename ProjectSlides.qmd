@@ -168,7 +168,7 @@ q1_data |>
 **Variables from data:**
 
 -   **hdi** The Human Development Index of a given country. This will be used as a metric for how developed the country is, where HDI measures factors such as life expectancy, education, and GNI to assess how developed a country is.
--   **renewables_share_gen_mix_percent** What % of the country's generation comes from renewables. We use this instead of total_installed_renewables_capacity as that may trivially become higher with more development.
+-   **% of energy generated from renewables** What % of the country's generation comes from renewables. We use this instead of the total installed renewables capacity as that may trivially become higher with more development.
 
 **Created variables:**
 
