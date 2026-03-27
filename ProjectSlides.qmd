@@ -165,7 +165,7 @@ q1_data |>
 
 **Variables from data:**
 
--   **hdi** The Human Development Index of a given country. This will be used as a metric for how developed the country is, where HDI measures factors such as life expectancy, education, and GNI to assess how developed a country is.
+-   **Human Development Index (HDI)** The Human Development Index of a given country. This will be used as a metric for how developed the country is, where HDI measures factors such as life expectancy, education, and GNI to assess how developed a country is.
 -   **% of energy generated from renewables** What % of the country's generation comes from renewables. We use this instead of the total installed renewables capacity as that may trivially become higher with more development.
 
 **Created variables:**
@@ -283,13 +283,13 @@ Is private sector participation in electricity generation capacity associated wi
 
 **Variables used:**
 
--   **private_sector_power_gen_commercial**: the amount of installed electricity generation capacity that is commercially operated by private companies.
--   **renewables_share_gen_mix_percent**: the share of total electricity generation that comes from renewable sources. 
--   **installed_gen_capacity**: the total maximum generating capacity of a country’s power system.
+-   **Private Sector Power Generation:**: the amount of installed electricity generation capacity that is commercially operated by private companies.
+-   **Renewables Share of Generation Mix (%):** the share of total electricity generation that comes from renewable sources. 
+-   **Installed Generation Capacity:** the total maximum generating capacity of a country’s power system.
 
 **New variables/groups defined:**
 
--   **private_generation_share \<- (private_sector_power_gen_commercial / installed_gen_capacity) * 100**: the proportion of a country’s total installed electricity generation capacity that is operated by the private sector. It is calculated by dividing commercially operating private-sector generation capacity by total installed generation capacity, then multiplying by 100.
+-   **Private Generation Share**: the proportion of a country’s total installed electricity generation capacity that is operated by the private sector. It is calculated by dividing commercially operating private-sector generation capacity by total installed generation capacity, then multiplying by 100.
 
 ## Q3: Visualization
 
@@ -482,17 +482,17 @@ CATF_data |>
 - There is a **positive relationship** between revenue collection and renewable capacity: countries in the high collection group (~970 MW) have much higher average capacity than those in medium (~250 MW) and low (~106 MW) groups.
 - However, there is **substantial variation within groups**, especially among high-collection countries, indicating that countries with similar collection rates can still have very different renewable capacities.
 - The regression line has a **slight positive slope**, but the wide variability of data points indicates that collection rate is only able to explain a limited portion of the variation.
-- Overall, while stronger revenue collection is associated with higher renewable capacity, it is **not a strong predictor on its own**, and other factors tend to have more influence.
+- Overall, while stronger revenue collection is linked to a higher renewable capacity, it cannot serve as a strong predictor by itself; other factors tend to have more influence.
 
 ## Overall Limitations
 
 Data Limitations:
 
--   **Data Collection:** The CATF data was collected by student internet searches. This introduces lots of room for inaccuracies, since data points may come from different years or use different definitions.
+-   **Data Collection:** Because the data set combines information from various global databases and public records, data for different countries often come from different reporting years or rely on slightly different definitions and metrics. These differences could introduce inaccuracy during data analysis.
 
--   **Inaccuracies in data:** Outliers such as the 65 000% renewables_share_gen_mix indicate that the data set contains some inaccurate data that will impact the results of the research.
+-   **Unmeasured Factors:** Our analysis focused on relationships between two variables at a time, meaning we were unable to control for external factors. Hidden third variables such as foreign aid investments, geographic solar/wind potential and political stability could be responsible for the outcomes of both variables.
 
--   **Missing Data:** Many African countries may lack the necessary infrastructure to report all the variables in the dataset. This may skew the results of research; it may cause the less wealthy countries to be less represented in the dataset.
+-   **Missing Data:** Several countries had incomplete reports for variables (such as SAIFI or private sector generation capacity). Omitting these missing values reduces the overall sample size, meaning our findings may be less representative of the African continent.
 
 ## Overall Conclusion
 
@@ -506,4 +506,4 @@ Data Limitations:
 
 - A key limitation is that the dataset contains **missing and inconsistent values**, and  hence, the analysis utilises aggregated country-level data, which may hide within-country variation and introduce selection bias.
 
-- For CATF, this suggests that improving renewable energy outcomes will likely require **coordinated improvements across multiple dimensions**, rather than focusing on a single performance indicator.
+- For CATF, this suggests that improving renewable energy outcomes will likely require **coordination across different fields**, rather than focusing on a single performance indicator.
