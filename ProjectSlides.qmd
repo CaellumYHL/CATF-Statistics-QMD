@@ -368,68 +368,85 @@ The table compares public-oriented and private-oriented electricity systems by s
 -   The group comparison should be interpreted cautiously because the private-oriented group is much smaller than the public-oriented group.
 -   Overall, the analysis suggests a weak association rather than a strong conclusion, and it should not be interpreted as evidence of causation.
 
-## Question #4: [Sahand Samadirad - Revenue Collection and Renewable Capacity]
+## Question #4 (Sahand Samadirad): Revenue Collection and Renewable Capacity
 
 **Do countries with higher electricity revenue collection rates tend to have more installed renewable energy capacity?**
 
-- Electricity revenue collection reflects the **financial health of utilities** and their ability to fund infrastructure.
-- Renewable energy projects require **high upfront investment**, making financing a key constraint.
-- Weak collection rates may limit investment, leading to **slower renewable energy development**.
+- Revenue collection reflects the **financial health of utilities**.
+- Stronger finances can support **renewable energy investment**.
+- Weak collection may slow infrastructure expansion.
 
-- This directly connects to our theme: identifying **drivers of renewable energy development in African electricity systems**.
-- Specifically, it tests whether **financial performance (collection rate)** influences renewable capacity expansion.
+- This matters to **CATF** because utility finances may affect energy transition progress.
+- It connects to our theme by testing whether **financial performance** is associated with renewable energy development.
 
 **Hypothesis:**  
-Countries with higher electricity revenue collection rates will tend to have **greater installed renewable energy capacity** due to stronger financial capacity for investment.
+Countries with higher electricity revenue collection rates will tend to have **greater installed renewable energy capacity**.
 
 ## Q4: Variables & Approach
 
 **Variables used:**
 
--   **collection_rate_percent**\
-    Percentage of billed electricity revenue that utilities successfully collect.\
-    This variable reflects the financial efficiency and operational performance of electricity utilities.
+- **Electricity revenue collection rate (%)**  
+  Measures how much billed electricity revenue utilities successfully collect.
 
--   **total_installed_variable_renewables_capacity**\
-    Total installed capacity of variable renewable energy sources such as wind and solar (MW).\
-    This variable represents the level of renewable energy development within a country's electricity system.
+- **Installed renewable energy capacity (MW)**  
+  Measures the scale of solar and wind development in each country.
 
-**New variables/groups defined:**
+**Grouping used:**
 
-To make comparisons clearer, countries are grouped based on electricity revenue collection performance:
+Countries were grouped by revenue collection performance:
 
--   Low collection rate: below 70%\
--   Medium collection rate: 70–90%\
--   High collection rate: above 90%
+- **Low:** below 70%
+- **Medium:** 70–90%
+- **High:** above 90%
 
-These categories allow us to compare renewable capacity across different levels of financial performance.
+This allows a clearer comparison of renewable capacity across different levels of financial performance.
 
 ## Q4: Visualization
 
-```{r q4-plot}
+```{r q4-plot, fig.width=7.2, fig.height=4.2, out.width="78%"}
 CATF_data |>
+  group_by(country) |>
+  summarise(
+    collection_rate_percent = median(collection_rate_percent, na.rm = TRUE),
+    total_installed_variable_renewables_capacity = median(total_installed_variable_renewables_capacity, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  filter(
+    !is.na(collection_rate_percent),
+    !is.na(total_installed_variable_renewables_capacity)
+  ) |>
   ggplot(aes(x = collection_rate_percent, y = total_installed_variable_renewables_capacity)) +
-  geom_point(color = "darkgreen", size = 3) +
+  geom_point(color = "darkgreen", size = 2.6) +
   geom_smooth(method = "lm", se = FALSE, color = "black") +
   scale_y_log10() +
   labs(
-    x = "Electricity Revenue Collection Rate (%)",
-    y = "Installed Renewable Energy Capacity (MW)",
-    title = "Collection Rate vs Renewable Energy Capacity"
+    x = "Revenue Collection Rate (%)",
+    y = "Renewable Capacity (MW)",
+    title = "Revenue Collection and Renewable Capacity Across Countries"
   ) +
   theme_minimal() +
   theme(
-    panel.grid.minor = element_blank(),   # removes dense log gridlines
-    panel.grid.major = element_line(color = "grey80")  # keeps clean standard grid
+    plot.title = element_text(size = 16),
+    axis.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(color = "grey80")
   )
 ```
-
-The y-axis is shown on a logarithmic scale to account for large differences in renewable capacity across countries.
+\vfill
+{\footnotesize The y-axis uses a logarithmic scale to make cross-country differences easier to see.}
 
 ## Q4: Summary Table
 
-```{r q4-table}
+```{r q4-table, out.width="75%"}
 CATF_data |>
+  group_by(country) |>
+  summarise(
+    collection_rate_percent = median(collection_rate_percent, na.rm = TRUE),
+    total_installed_variable_renewables_capacity = median(total_installed_variable_renewables_capacity, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
   filter(
     !is.na(collection_rate_percent),
     !is.na(total_installed_variable_renewables_capacity)
@@ -450,23 +467,24 @@ CATF_data |>
   group_by(collection_group) |>
   summarise(
     Countries = n(),
-    `Avg Collection Rate (%)` = round(mean(collection_rate_percent, na.rm = TRUE), 1),
-    `SD Collection Rate (%)` = round(sd(collection_rate_percent, na.rm = TRUE), 1),
-    `Avg Renewable Capacity (MW)` = round(mean(total_installed_variable_renewables_capacity, na.rm = TRUE), 1),
-    `SD Renewable Capacity (MW)` = round(sd(total_installed_variable_renewables_capacity, na.rm = TRUE), 1)
+    `Avg Rate (%)` = round(mean(collection_rate_percent, na.rm = TRUE), 1),
+    `SD Rate` = round(sd(collection_rate_percent, na.rm = TRUE), 1),
+    `Avg Capacity (MW)` = round(mean(total_installed_variable_renewables_capacity, na.rm = TRUE), 1),
+    `SD Capacity` = round(sd(total_installed_variable_renewables_capacity, na.rm = TRUE), 1),
+    .groups = "drop"
   ) |>
   kable(caption = "Renewable Capacity by Collection Rate Category")
 ```
 
+- High-collection countries have the highest average renewable capacity.
+- However, variation is large within groups, especially in the high category.
+
 ## Insights for Q4
 
-- The scatterplot and regression line suggest a **weak positive relationship** between electricity revenue collection rate and installed renewable energy capacity.
-- Countries with higher collection rates tend to have **higher average renewable capacity**, but there is **substantial variation within each group**, particularly in the high-collection category.
-- The fitted linear regression line has a **slightly positive slope**, but the wide spread of data points indicates **low explanatory power**, meaning the model does not explain much of the variation in renewable capacity.
-- Some collection rates exceed 100%, which may occur due to the recovery of past unpaid bills (arrears) or differences in reporting methods across countries. These values increase variability, especially in the high-collection group, and can influence the averages and spread of the data.
-- This analysis uses only observations with complete data for both variables, ensuring a **consistent and comparable sample** when examining the relationship. While this improves the validity of the comparison, it may introduce **selection bias**, as countries with missing renewable capacity data are excluded and may differ systematically from those included.
-- Overall, this suggests that while financial performance may play a role, **collection rate alone is not a strong predictor** of renewable energy development, and other factors such as country size, economic conditions, and policy likely have a greater impact.
-- In summary, there is only weak evidence that higher collection rates are associated with greater renewable energy capacity, and the relationship is not strong enough to suggest that collection rate is a key driver on its own.
+- There is a **positive relationship** between revenue collection and renewable capacity: countries in the high collection group (~970 MW) have much higher average capacity than those in medium (~250 MW) and low (~106 MW) groups.
+- However, there is **substantial variation within groups**, especially among high-collection countries, indicating that countries with similar collection rates can still have very different renewable capacities.
+- The regression line shows a **slight upward trend**, but the wide spread of points suggests that collection rate explains only a limited portion of the variation.
+- Overall, while stronger revenue collection is associated with higher renewable capacity, it is **not a strong predictor on its own**, and other factors likely play a significant role.
 
 ## Overall Limitations
 
