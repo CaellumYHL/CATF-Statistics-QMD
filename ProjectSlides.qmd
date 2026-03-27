@@ -72,7 +72,7 @@ Do countries with a higher share of renewable energy in the generation mix tend 
 
 **New variables/groups defined:**
 
-To intuitively compare reliability, I can group countries based on their renewable generation share:
+To intuitively compare reliability, we group countries based on their renewable generation share:
 
 -   Renewable Group: "Low" when the countries renewable energy share is below 20%, "Medium" when it is between 20-50%, and "High" when above 50%
 
