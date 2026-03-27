@@ -103,7 +103,8 @@ q1_data <- country_level_data |>
 
 plot_zoomed <- ggplot(q1_data, aes(x = renewable_group, y = country_SAIFI, fill = renewable_group)) +
   geom_boxplot(alpha = 0.6, outlier.color = "red") +
-  coord_cartesian(ylim = c(0, 150)) + 
+  coord_cartesian(ylim = c(0, 150)) +
+  scale_x_discrete(labels = c("Low\n(<20%)", "Medium\n(20–50%)", "High\n(>50%)")) +
   labs(
     x = "Renewable Share",
     y = "Interruptions (SAIFI)",
@@ -113,6 +114,7 @@ plot_zoomed <- ggplot(q1_data, aes(x = renewable_group, y = country_SAIFI, fill 
   theme(legend.position = "none")
 
 plot_full <- ggplot(q1_data, aes(x = renewable_group, y = country_SAIFI, fill = renewable_group)) +
+  scale_x_discrete(labels = c("Low\n(<20%)", "Medium\n(20–50%)", "High\n(>50%)")) + 
   geom_boxplot(alpha = 0.6, outlier.color = "red") +
   labs(
     x = "Renewable Share",
