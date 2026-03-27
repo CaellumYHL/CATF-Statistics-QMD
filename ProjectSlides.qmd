@@ -479,8 +479,8 @@ CATF_data |>
 
 - There is a **positive relationship** between revenue collection and renewable capacity: countries in the high collection group (~970 MW) have much higher average capacity than those in medium (~250 MW) and low (~106 MW) groups.
 - However, there is **substantial variation within groups**, especially among high-collection countries, indicating that countries with similar collection rates can still have very different renewable capacities.
-- The regression line shows a **slight upward trend**, but the wide spread of points suggests that collection rate explains only a limited portion of the variation.
-- Overall, while stronger revenue collection is associated with higher renewable capacity, it is **not a strong predictor on its own**, and other factors likely play a significant role.
+- The regression line has a **slight positive slope**, but the wide variability of data points indicates that collection rate is only able to explain a limited portion of the variation.
+- Overall, while stronger revenue collection is associated with higher renewable capacity, it is **not a strong predictor on its own**, and other factors tend to have more influence.
 
 ## Overall Limitations
 
@@ -492,8 +492,16 @@ Data Limitations:
 
 -   **Missing Data:** Many African countries may lack the necessary infrastructure to report all the variables in the dataset. This may skew the results of research; it may cause the less wealthy countries to be less represented in the dataset.
 
-## Future Directions
+## Overall Conclusion
 
--   **Standardized Data Collection:** To reduce inaccuracies introduced by varying methods of data collection, the CATF dataset could be collected only from standardized global databases, i.e World Bank. This would minimize inconsistent value but may lead to more values being dropped.
--   **Data Cleansing:** To improve the removal of extreme outliers (like the 65,000% renewable share), strict checks could be implemented during data entry to automatically remove physically impossible values before analysis. For example, a check could be implemented to ensure that the values inputted in the renewables_share_gen_mix are never greater than 100.
--   **Inclusive Data Collection Methods:** Instead of collecting data directly from the government records, globally available proxy data could be used to ensure that every country is included. While it is unfeasible to manually collect the data for each country, the CATF could use stand-in values as estimates. For example, the amount of imported solar panels could be used as a rough proxy for solar capacity.
+- Across all research questions, the results show that renewable energy development in African electricity systems is influenced by **multiple interacting factors**, and not just a single one.
+
+- Financial performance (revenue collection), development level, and private sector participation show **some association with renewable outcomes**, but individually, they do not strongly explain differences across countries.
+
+- In particular, while higher revenue collection is associated with higher renewable capacity, there is only a **weak and highly variable** relationship, indicating that other factors such as policy, infrastructure, and country size could play bigger roles.
+
+- Overall, this supports our theme that renewable energy development is shaped by a **combination of financial, institutional, and structural conditions**, rather than any single metric.
+
+- A key limitation is that the dataset contains **missing and inconsistent values**, and  hence, the analysis utilises aggregated country-level data, which may hide within-country variation and introduce selection bias.
+
+- For CATF, this suggests that improving renewable energy outcomes will likely require **coordinated improvements across multiple dimensions**, rather than focusing on a single performance indicator.
