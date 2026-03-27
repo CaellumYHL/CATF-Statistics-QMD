@@ -386,7 +386,7 @@ The table compares public-oriented and private-oriented electricity systems by s
 **Hypothesis:**  
 Countries with higher electricity revenue collection rates will tend to have **greater installed renewable energy capacity**.
 
-## Q4: Variables & Approach
+## Q4: Variables & Approach {shrink=10}
 
 **Variables used:**
 
