@@ -494,7 +494,7 @@ Data Limitations:
 
 -   **Missing Data:** Several countries had incomplete reports for variables (such as SAIFI or private sector generation capacity). Omitting these missing values reduces the overall sample size, meaning our findings may be less representative of the African continent.
 
-## Overall Conclusion
+## Overall Conclusion {shrink=10}
 
 - Across all research questions, the results show that renewable energy development in African electricity systems is influenced by **multiple interacting factors**, and not just a single one.
 
