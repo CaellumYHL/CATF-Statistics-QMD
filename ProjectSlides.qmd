@@ -41,21 +41,21 @@ knitr::opts_chunk$set(
 CATF_data <- read_csv("CATF_data.csv")
 ```
 
-Introduction
+**Introduction**
 
-Overall Theme: Patterns and drivers of renewable energy development across African electricity systems
+**Overall Theme:** Patterns and drivers of renewable energy development across African electricity systems
 
-Research Goal: Investigate how renewable energy usage is different among African electricity systems and explore factors that may be associated with differences in renewable energy capacity between countries.
+**Research Goal:** Investigate how renewable energy usage is different among African electricity systems and explore factors that may be associated with differences in renewable energy capacity between countries.
 
-Target Population: The study focuses on African countries included in the CATF electricity sector dataset.
+**Target Population:** The study focuses on African countries included in the CATF electricity sector dataset.
 
-Audience: The primary audience is Clean Air Task Force (CATF), a global non-governmental organization that seeks to mitigate climate change through development and deployment of low-carbon energy technologies. CATF staff are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).
+**Audience:** The primary audience is Clean Air Task Force (CATF), a global non-governmental organization that seeks to mitigate climate change through development and deployment of low-carbon energy technologies. CATF staff are interested in understanding patterns in electricity sector performance across African countries to help inform the development of the Electricity Sector Performance Scorecard (CATF-ESPS).
 
-Data Summary
+**Data Summary**
 
 The dataset contains country-level indicators describing electricity system performance across African countries. These indicators capture areas such as electricity access, reliability, infrastructure development, financial performance, and renewable energy capacity.
 
-Data Wrangling:
+**Data Wrangling:**
 
 \- To facilitate comparison across countries, the variable `collection_rate_percent` was grouped into categories representing different levels of electricity revenue collection performance. A new variable called `collection_group` was created in the `CATF_data` dataset. The groups are defined as Low (\<70%), Medium (70–90%), and High (\>90%). This transformation allows us to compare `total_installed_variable_renewables_capacity` across countries with different levels of revenue collection performance.
 
@@ -330,7 +330,7 @@ ggplot(
   CATF_clean,
   aes(x = private_generation_share, y = renewables_share_gen_mix_percent)
 ) +
-  geom_point(size = 2, color = "blue") +
+  geom_point(size = 3, color = "blue") +
   geom_smooth(method = "lm", se = FALSE, color = "black", linewidth = 0.9) +
   labs(
     title = "Renewable Energy Share vs Private Sector Participation",
