@@ -78,6 +78,9 @@ To intuitively compare reliability, we group countries based on their renewable 
 
 These cutoffs are established by the International Energy Agency (IEA). 20% marks the Phase 3 engineering tipping point for grid modernization, while 50% is the standard benchmark for renewables integration studies (IEA Wind Task 25 & PVPS Task 14).
 
+\vfill
+{\tiny \textbf{Reference:} International Energy Agency (IEA). \textit{Variable Renewable Energy Integration Benchmarks} (Task 25 & Task 14).}
+
 ## Q1: Visualization  {shrink=10}
 
 ```{r q1-plot}
@@ -171,6 +174,9 @@ q1_data |>
 **Created variables:**
 
 We will create a new variable by grouping countries based on their HDI using the standard detailed by the UNDP, which defines: "Low HDI" as less than 0.5, "Medium HDI" as between 0.5 and 0.699, "High HDI" as between 0.7 and 0.799, and "Very High HDI" as 0.8 and above.
+
+\vfill
+{\tiny \textbf{Reference:} United Nations Development Programme (UNDP). \textit{Human Development Report: HDI Classification Standards}.}
 
 ## Q2: Visualization
 
