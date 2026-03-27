@@ -88,7 +88,7 @@ country_level_data <- CATF_data |>
     country_SAIFI = median(SAIFI, na.rm = TRUE)
   ) |>
   filter(!is.na(country_renewable_share) & !is.na(country_SAIFI)) |>
-  # This is impossible and obviously a typo, so it can be filtered out. 
+  # Anything with a percentage higher than 100 is impossible and likely a typo, so it can be filtered out. 
   filter(country_renewable_share <= 100)
 
 q1_data <- country_level_data |>
@@ -107,7 +107,7 @@ plot_zoomed <- ggplot(q1_data, aes(x = renewable_group, y = country_SAIFI, fill 
   labs(
     x = "Renewable Share",
     y = "Interruptions (SAIFI)",
-    title = "Typical Reliability (Zoomed)",
+    title = "Core SAIFI Scores",
   ) +
   theme_minimal() +
   theme(legend.position = "none")
@@ -117,7 +117,7 @@ plot_full <- ggplot(q1_data, aes(x = renewable_group, y = country_SAIFI, fill = 
   labs(
     x = "Renewable Share",
     y = "", 
-    title = "Full Reliability",
+    title = "Complete SAIFI Range",
   ) +
   theme_minimal() +
   theme(legend.position = "none")
