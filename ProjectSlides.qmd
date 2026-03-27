@@ -197,7 +197,7 @@ CATF_data |>
   )
 ```
 
-## Q2: Summary Table
+## Q2: Summary Table and Linear Model {shrink=10}
 
 ```{r q2-table}
 CATF_data |>
@@ -234,8 +234,6 @@ CATF_data |>
 ) |> rename(`HDI Group` = hdi_grouping) |>
      kable(caption = "Renewable Energy Share by HDI Development Group")
 ```
-
-## Q2: Linear Model Output
 
 ```{r q2-lm}
 lm_q2 <- CATF_data |>
