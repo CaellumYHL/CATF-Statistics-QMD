@@ -41,7 +41,7 @@ knitr::opts_chunk$set(
 CATF_data <- read_csv("CATF_data.csv")
 ```
 
-**Introduction**
+## **Introduction** {shrink=10}
 
 **Overall Theme:** Patterns and drivers of renewable energy development across African electricity systems
 
@@ -57,7 +57,7 @@ The dataset contains country-level indicators describing electricity system perf
 
 **Data Wrangling:**
 
-\- To facilitate comparison across countries, the variable `collection_rate_percent` was grouped into categories representing different levels of electricity revenue collection performance. A new variable called `collection_group` was created in the `CATF_data` dataset. The groups are defined as Low (\<70%), Medium (70–90%), and High (\>90%). This transformation allows us to compare `total_installed_variable_renewables_capacity` across countries with different levels of revenue collection performance.
+\- To facilitate comparison, countries were grouped into three categories based on their electricity revenue collection rates: Low (<70%), Medium (70–90%), and High (>90%). This categorization allows us to clearly compare total installed renewable energy capacity across different levels of financial performance.
 
 ## Question #1: \[Caellum Yip Hoi - Lee - Renewable Presence and Power Reliability\]
 
@@ -66,23 +66,23 @@ Do countries with a higher share of renewable energy in the generation mix tend 
 * **Relevance:** As African nations develop electric grids, transitioning to renewable energy is a priority. Understanding how the shift to renewable sources could impact energy reliability may be helpful in leading effective infrastructure development. 
 * **Connection to Theme:** This investigates a potential trade-off between two core areas of the CATF-ESPS: renewable energy development and power grid stability.
 
-## Q1: Variables & Approach
+## Q1: Variables & Approach  {shrink=10}
 
 **Variables used:**
 
--   **renewables_share_gen_mix_percent:** The percentage of electricity generation coming from renewable energy sources. This variable captures the amount of renewable energy being employed in the country's electricity system.
+-   **Renewable Energy Share Percent:** The percentage of electricity generation coming from renewable energy sources. This variable captures the amount of renewable energy being employed in the country's electricity system.
 
--   **SAIFI:** System Average Interruption Frequency Index, representing Voltage Quality / Frequency It is the total number of reported interruptions divided by total customers. This variable serves as a primary measure of power reliability.
+-   **SAIFI:** System Average Interruption Frequency Index, representing Voltage Quality / Frequency. It is the total number of reported interruptions divided by total customers. This variable serves as a primary measure of power reliability.
 
 **New variables/groups defined:**
 
 To intuitively compare reliability, I can group countries based on their renewable generation share:
 
--   renewable_group: "Low" when renewables_share_gen_mix_percent is below 20%, "Medium" when it is between 20-50%, and "High" when above 50%
+-   Renewable Group: "Low" when the countries renewable energy share is below 20%, "Medium" when it is between 20-50%, and "High" when above 50%
 
 These cutoffs are established by the International Energy Agency (IEA). 20% marks the Phase 3 engineering tipping point for grid modernization, while 50% is the standard benchmark for renewables integration studies (IEA Wind Task 25 & PVPS Task 14).
 
-## Q1: Visualization
+## Q1: Visualization  {shrink=10}
 
 ```{r q1-plot}
 country_level_data <- CATF_data |>
@@ -131,7 +131,7 @@ plot_grid(plot_zoomed, plot_full, ncol = 2)
 
 ```
 
-## Q1: Summary Table
+## Q1: Summary Table  {shrink=10}
 
 ```{r q1-table}
 q1_data |>
@@ -148,7 +148,7 @@ q1_data |>
 
 ```
 
-## Q1: Insights & Takeaways
+## Q1: Insights & Takeaways  {shrink=10}
 
 -   **Medium Power Share Stability:** Countries with a moderate renewable energy share (those with around 20-50%) exhibited the most stable and reliable grids. This group has the lowest average interruptions (13.6 SAIFI), the tightest visual spread, and zero extreme outliers, showing a strong association between a mixed generation profile and grid stability.
 -   **Extreme Outliers in Low Group:** The Low (<20%) energy share group displayed the most widespread variance. While the median for the group is relatively low, it contains massive, catastrophic outliers (with SAIFI scores reaching over 600).
