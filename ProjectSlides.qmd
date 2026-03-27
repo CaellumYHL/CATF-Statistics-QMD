@@ -398,13 +398,18 @@ Countries with higher electricity revenue collection rates will tend to have **g
 
 **Grouping used:**
 
-Countries were grouped by revenue collection performance:
+To make the comparison easier to interpret, countries are grouped by electricity revenue collection performance:
 
-- **Low:** below 70%
-- **Medium:** 70–90%
-- **High:** above 90%
+- **Low collection:** below 70%  
+- **Medium collection:** 70% to below 90%  
+- **High collection:** 90% and above  
 
-This allows a clearer comparison of renewable capacity across different levels of financial performance.
+This grouping reflects meaningful differences in utility performance.  
+- Below 70% suggests significant revenue loss and weaker financial capacity.  
+- 70–90% represents moderate performance, where utilities recover most but not all costs.  
+- Above 90% indicates strong revenue collection and relatively stable financial conditions.  
+
+By grouping countries this way, we can compare renewable capacity across clearly distinct levels of financial strength rather than relying only on raw continuous values.
 
 ## Q4: Visualization
 
